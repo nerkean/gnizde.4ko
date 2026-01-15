@@ -3,19 +3,22 @@ import ContentBlock from "@/models/ContentBlock";
 
 export async function sendTelegramOrder(order: any) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
-  // Основной ID из файла (как резерв)
-  const envChatId = process.env.TELEGRAM_CHAT_ID;
-
+  
   if (!token) {
-    console.error("❌ Telegram token is missing");
+    console.error("❌ Telegram token is missing in .env");
     return;
   }
 
-  // 1. Получаем список ID из базы данных
+  // 1. Получаем ID из .env (резервный)
+  const envChatId = process.env.TELEGRAM_CHAT_ID;
+
+  // 2. Получаем список ID из базы данных (настройки админки)
   let dbChatIds: string[] = [];
   try {
     await connectDB();
-    const settings = await ContentBlock.findOne({ key: "admin.settings" }).lean();
+    // 👇 ГЛАВНОЕ ИСПРАВЛЕНИЕ: "as any" убирает ошибку TypeScript
+    const settings = await ContentBlock.findOne({ key: "admin.settings" }).lean() as any;
+    
     if (settings && settings.data && Array.isArray(settings.data.telegramChatIds)) {
       dbChatIds = settings.data.telegramChatIds;
     }
@@ -23,50 +26,60 @@ export async function sendTelegramOrder(order: any) {
     console.error("⚠️ Error reading telegram settings from DB:", e);
   }
 
-  // 2. Объединяем ID из .env и базы (убираем дубликаты)
-  const allChatIds = new Set<string>();
-  if (envChatId) allChatIds.add(envChatId);
-  dbChatIds.forEach((id) => allChatIds.add(String(id)));
+  // 3. Объединяем все ID и убираем дубликаты
+  const uniqueIds = new Set<string>();
+  
+  if (envChatId) {
+    // Если в .env несколько ID через запятую
+    envChatId.split(",").forEach(id => uniqueIds.add(id.trim()));
+  }
+  
+  dbChatIds.forEach((id) => uniqueIds.add(String(id)));
 
-  const targets = Array.from(allChatIds).filter(Boolean);
+  const targets = Array.from(uniqueIds).filter(Boolean);
 
   if (targets.length === 0) {
-    console.error("❌ No Telegram Chat IDs found (check .env or Admin Settings)");
+    console.error("❌ No Telegram Chat IDs found. Add them in Admin Panel or .env");
     return;
   }
 
-  // Формируем текст сообщения
+  // 4. Формируем красивый текст сообщения
   const itemsList = order.items
     .map(
       (i: any, index: number) =>
-        `${index + 1}. <b>${i.title_ua}</b>\n    ${i.qty} шт. × ${i.priceUAH} ₴`
+        `${index + 1}. <b>${i.title_ua || i.product?.title_ua || "Товар"}</b>\n    ${i.quantity || i.qty} шт. × ${i.priceUAH || i.product?.priceUAH} ₴`
     )
     .join("\n");
 
+  const deliveryText = order.delivery === "nova_poshta" 
+    ? `🔴 Нова Пошта: ${order.city}, ${order.warehouse}`
+    : order.delivery === "ukr_poshta" 
+      ? `🟡 Укрпошта: ${order.city}, ${order.warehouse}`
+      : `🚚 Інше: ${order.city}, ${order.warehouse}`;
+
   const message = `
 📦 <b>НОВЕ ЗАМОВЛЕННЯ!</b>
-<code>${order.orderId}</code>
+<code>#${order._id ? String(order._id).slice(-6).toUpperCase() : "ID"}</code>
 
-👤 <b>Клієнт:</b> ${order.customer.name}
-📞 <b>Телефон:</b> ${order.customer.phone}
-${order.customer.email ? `✉️ <b>Email:</b> ${order.customer.email}` : ""}
+👤 <b>Клієнт:</b> ${order.name}
+📞 <b>Телефон:</b> <code>${order.phone}</code>
+💬 <b>Зв'язок:</b> ${order.messenger}
 
 🚚 <b>Доставка:</b>
-${order.delivery.type === "nova" ? "Нова Пошта" : order.delivery.type === "ukr" ? "Укрпошта" : "Кур'єр"}
-${order.delivery.city}, ${order.delivery.branch || order.delivery.address}
-
-💰 <b>Сума: ${order.total} ₴</b>
+${deliveryText}
 
 🛒 <b>Товари:</b>
 ${itemsList}
 
-${order.customer.comment ? `💬 <b>Коментар:</b>\n${order.customer.comment}` : ""}
+💰 <b>СУМА: ${order.total} ₴</b>
+
+${order.comment ? `📝 <b>Коментар:</b>\n${order.comment}` : ""}
 `;
 
-  // 3. Отправляем каждому получателю
+  // 5. Отправляем каждому получателю
   const url = `https://api.telegram.org/bot${token}/sendMessage`;
 
-  console.log(`🚀 Sending Telegram notifications to ${targets.length} recipients...`);
+  console.log(`🚀 Sending Telegram order notification to ${targets.length} recipients...`);
 
   await Promise.all(
     targets.map(async (chatId) => {
@@ -80,6 +93,7 @@ ${order.customer.comment ? `💬 <b>Коментар:</b>\n${order.customer.comm
             parse_mode: "HTML",
           }),
         });
+        
         if (!res.ok) {
           const err = await res.text();
           console.error(`❌ Failed to send to ${chatId}:`, err);
