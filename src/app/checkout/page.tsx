@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { readCartOnce } from "@/lib/cart-bridge";
-import NovaDeliveryFields from "@/components/NovaDeliveryFields";
+import NovaDeliveryFields from "@/components/NovaDeliveryFields"; // Убедись, что этот файл существует (код ниже)
+import UkrDeliveryFields from "@/components/UkrDeliveryFields";
 
 // --- Типы ---
 type CartItem = {
@@ -14,7 +15,7 @@ type CartItem = {
   image?: string;
 };
 
-// --- Хук для работы с корзиной ---
+// --- Хук (без изменений) ---
 function useCartBridge() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [ready, setReady] = useState(false);
@@ -99,6 +100,88 @@ function useCartBridge() {
   return { items, subtotal, shipping, total, reload: loadRaw };
 }
 
+// --- Компоненты UI ---
+function Field({
+  label,
+  value,
+  onChange,
+  placeholder,
+  error,
+  className = "",
+  textarea = false,
+  autoComplete,
+  inputMode,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  error?: string;
+  className?: string;
+  textarea?: boolean;
+  autoComplete?: string;
+  inputMode?: "text" | "tel" | "email" | "numeric";
+}) {
+  const baseClasses =
+    "w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 placeholder:text-stone-400 outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 hover:border-stone-300";
+
+  return (
+    <div className={className}>
+      <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-stone-500 pl-1">
+        {label}
+      </label>
+      {textarea ? (
+        <textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          rows={3}
+          className={`${baseClasses} resize-none`}
+        />
+      ) : (
+        <input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          autoComplete={autoComplete}
+          inputMode={inputMode}
+          className={`${baseClasses} ${error ? "border-red-300 focus:border-red-500 focus:ring-red-100" : ""}`}
+        />
+      )}
+      {error && <p className="mt-1.5 text-xs font-medium text-red-600 pl-1">{error}</p>}
+    </div>
+  );
+}
+
+function DeliveryPill({
+  active,
+  onClick,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`
+        relative w-full rounded-xl border px-3 py-3 text-sm font-semibold transition-all duration-200 overflow-hidden
+        ${active 
+          ? "border-stone-900 bg-stone-900 text-white shadow-lg shadow-stone-900/20" 
+          : "border-stone-200 bg-white text-stone-600 hover:border-stone-300 hover:bg-stone-50"
+        }
+      `}
+    >
+      {label}
+      {active && (
+         <div className="absolute inset-0 bg-white/10 mix-blend-overlay" />
+      )}
+    </button>
+  );
+}
+
 // --- Основной компонент страницы ---
 export default function CheckoutPage() {
   const { items, subtotal, total } = useCartBridge();
@@ -111,8 +194,6 @@ export default function CheckoutPage() {
   const [branch, setBranch] = useState("");
   const [address, setAddress] = useState("");
   const [comment, setComment] = useState("");
-  
-  // ❌ Убрали стейт agree
   
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -133,8 +214,6 @@ export default function CheckoutPage() {
     
     if (delivery === "courier" && !address.trim())
       e.address = "Вкажіть адресу для курʼєра";
-    
-    // ❌ Убрали проверку agree
     
     if (!items.length) e.cart = "Кошик порожній";
 
@@ -179,7 +258,6 @@ export default function CheckoutPage() {
 
   return (
     <section className="container py-10 md:py-14 max-w-6xl mx-auto px-4">
-      {/* Заголовок */}
       <div className="mb-10 text-center">
         <p className="text-[11px] uppercase tracking-[0.32em] text-amber-700/80 font-bold">
           Оформлення
@@ -194,7 +272,8 @@ export default function CheckoutPage() {
       </div>
 
       <form onSubmit={onSubmit} className="space-y-6">
-        <div className="rounded-[2.5rem] border border-amber-100 bg-white/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(0,0,0,0.04)] p-6 sm:p-10 overflow-hidden">
+        {/* 👇 ИСПРАВЛЕНИЕ: УБРАН класс overflow-hidden */}
+        <div className="rounded-[2.5rem] border border-amber-100 bg-white/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(0,0,0,0.04)] p-6 sm:p-10">
           <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr] items-start">
             
             {/* ЛЕВАЯ КОЛОНКА — Форма */}
@@ -285,22 +364,14 @@ export default function CheckoutPage() {
                     )}
 
                     {delivery === "ukr" && (
-                      <div className="space-y-4">
-                        <Field
-                           label="Місто / Населений пункт"
-                           placeholder="Вкажіть місто"
-                           value={city}
-                           onChange={setCity}
-                           error={errors.city}
-                        />
-                        <Field
-                          label="№ відділення / поштомат / індекс"
-                          placeholder="Напр.: Відділення №5 або індекс 02000"
-                          value={branch}
-                          onChange={setBranch}
-                          error={errors.branch}
-                        />
-                      </div>
+                      <UkrDeliveryFields
+                        city={city}
+                        setCity={setCity}
+                        branch={branch}
+                        setBranch={setBranch}
+                        errorCity={errors.city}
+                        errorBranch={errors.branch}
+                      />
                     )}
 
                     {delivery === "courier" && (
@@ -325,7 +396,7 @@ export default function CheckoutPage() {
                 </div>
               </section>
 
-              {/* 3. Оплата (Інфо) */}
+              {/* 3. Оплата */}
               <section>
                  <div className="flex items-center gap-3 mb-6">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-700 font-bold text-sm">3</div>
@@ -395,14 +466,12 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                {/* ❌ Чекбокс полностью удален */}
                 {errors.cart && (
                     <div className="mt-2 text-xs text-red-600 font-medium animate-pulse">
                       {errors.cart}
                     </div>
                 )}
 
-                {/* Кнопка */}
                 <button
                   type="submit"
                   disabled={loading}
@@ -424,88 +493,5 @@ export default function CheckoutPage() {
         </div>
       </form>
     </section>
-  );
-}
-
-// --- Компоненты формы ---
-
-function Field({
-  label,
-  value,
-  onChange,
-  placeholder,
-  error,
-  className = "",
-  textarea = false,
-  autoComplete,
-  inputMode,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  error?: string;
-  className?: string;
-  textarea?: boolean;
-  autoComplete?: string;
-  inputMode?: "text" | "tel" | "email" | "numeric";
-}) {
-  const baseClasses =
-    "w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 placeholder:text-stone-400 outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 hover:border-stone-300";
-
-  return (
-    <div className={className}>
-      <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-stone-500 pl-1">
-        {label}
-      </label>
-      {textarea ? (
-        <textarea
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          rows={3}
-          className={`${baseClasses} resize-none`}
-        />
-      ) : (
-        <input
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          autoComplete={autoComplete}
-          inputMode={inputMode}
-          className={`${baseClasses} ${error ? "border-red-300 focus:border-red-500 focus:ring-red-100" : ""}`}
-        />
-      )}
-      {error && <p className="mt-1.5 text-xs font-medium text-red-600 pl-1">{error}</p>}
-    </div>
-  );
-}
-
-function DeliveryPill({
-  active,
-  onClick,
-  label,
-}: {
-  active: boolean;
-  onClick: () => void;
-  label: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`
-        relative w-full rounded-xl border px-3 py-3 text-sm font-semibold transition-all duration-200 overflow-hidden
-        ${active 
-          ? "border-stone-900 bg-stone-900 text-white shadow-lg shadow-stone-900/20" 
-          : "border-stone-200 bg-white text-stone-600 hover:border-stone-300 hover:bg-stone-50"
-        }
-      `}
-    >
-      {label}
-      {active && (
-         <div className="absolute inset-0 bg-white/10 mix-blend-overlay" />
-      )}
-    </button>
   );
 }
