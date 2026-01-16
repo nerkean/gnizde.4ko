@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation"; 
 import { 
   LayoutDashboard, 
   Package, 
@@ -10,7 +10,6 @@ import {
   LogOut,
   ExternalLink,
   FileText,
-  Menu
 } from "lucide-react";
 
 const navItems = [
@@ -23,25 +22,33 @@ const navItems = [
 
 export default function AdminNavbar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/admin/logout", { method: "POST" });
+      
+      router.push("/admin/login");
+      
+      router.refresh(); 
+    } catch (e) {
+      console.error("Logout failed", e);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-stone-200 bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60">
       <div className="container mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         
-        {/* ЛІВА ЧАСТИНА: Лого + Навігація */}
         <div className="flex items-center gap-8 overflow-hidden">
-          
-          {/* Логотип */}
           <Link href="/admin" className="flex items-center gap-2.5 shrink-0 hover:opacity-80 transition">
             <span className="font-bold text-stone-900 tracking-tight hidden md:block">
               Адмін-панель
             </span>
           </Link>
 
-          {/* Розділювач (тільки десктоп) */}
           <div className="h-6 w-px bg-stone-200 hidden md:block shrink-0"></div>
 
-          {/* Навігація */}
           <nav className="flex items-center gap-1 overflow-x-auto no-scrollbar mask-fade-right">
             {navItems.map((item) => {
               const isActive = item.exact 
@@ -74,7 +81,6 @@ export default function AdminNavbar() {
           </nav>
         </div>
 
-        {/* ПРАВА ЧАСТИНА: Дії */}
         <div className="flex items-center gap-2 shrink-0 pl-4 bg-gradient-to-l from-white/80 via-white/50 to-transparent">
           
           <a 
@@ -87,15 +93,13 @@ export default function AdminNavbar() {
             <ExternalLink size={14} />
           </a>
 
-          <form method="POST" action="/api/admin/logout">
-            <button 
-              type="submit" 
-              className="flex items-center justify-center h-9 w-9 rounded-lg text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
-              title="Вийти"
-            >
-              <LogOut size={18} />
-            </button>
-          </form>
+          <button 
+            onClick={handleLogout}
+            className="flex items-center justify-center h-9 w-9 rounded-lg text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition"
+            title="Вийти"
+          >
+            <LogOut size={18} />
+          </button>
 
         </div>
 
