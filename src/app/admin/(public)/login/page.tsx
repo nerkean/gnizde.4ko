@@ -1,17 +1,50 @@
-import { Lock, User, AlertCircle, CheckCircle, ShieldCheck } from "lucide-react";
+"use client";
 
-export default async function AdminLoginPage({
-  searchParams,
-}: { searchParams: Promise<Record<string, string>> }) {
-  const sp = await searchParams;
-  const next = sp?.next || "/admin";
-  const error = sp?.error === "1";
-  const loggedOut = sp?.loggedOut === "1";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Lock, User, AlertCircle, CheckCircle, ShieldCheck, Loader2 } from "lucide-react";
+
+function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  const next = searchParams.get("next") || "/admin";
+  const loggedOut = searchParams.get("loggedOut") === "1";
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        router.push(next);
+        router.refresh();
+      } else {
+        setError(data.error || "Невірний логін або пароль");
+      }
+    } catch (err) {
+      setError("Помилка з'єднання");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[#FAFAF9] p-4">
-      
-      <div className="w-full max-w-[420px]">
+    <div className="w-full max-w-[420px]">
         
         <div className="text-center mb-8">
            <div className="mx-auto h-12 w-12 bg-stone-900 text-white rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-stone-900/20">
@@ -32,14 +65,13 @@ export default async function AdminLoginPage({
           )}
           
           {error && (
-            <div className="mb-6 flex items-center gap-3 rounded-2xl bg-rose-50 px-4 py-3 text-sm font-medium text-rose-800 border border-rose-100">
+            <div className="mb-6 flex items-center gap-3 rounded-2xl bg-rose-50 px-4 py-3 text-sm font-medium text-rose-800 border border-rose-100 animate-in fade-in slide-in-from-top-1">
               <AlertCircle size={18} className="text-rose-600" />
-              Невірний логін або пароль
+              {error}
             </div>
           )}
 
-          <form method="POST" action="/api/admin/login" className="space-y-5">
-            <input type="hidden" name="next" value={next} />
+          <form onSubmit={handleSubmit} className="space-y-5">
             
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-stone-500 ml-1">
@@ -50,7 +82,8 @@ export default async function AdminLoginPage({
                   <User size={18} />
                 </div>
                 <input 
-                  name="username" 
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   required 
                   placeholder="admin"
                   className="w-full rounded-xl border border-stone-200 bg-stone-50 pl-11 pr-4 py-3 text-stone-900 placeholder:text-stone-400 focus:border-stone-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-stone-900 transition-all" 
@@ -67,7 +100,8 @@ export default async function AdminLoginPage({
                   <Lock size={18} />
                 </div>
                 <input 
-                  name="password" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   type="password" 
                   required 
                   placeholder="••••••••"
@@ -76,13 +110,26 @@ export default async function AdminLoginPage({
               </div>
             </div>
 
-            <button className="w-full mt-2 rounded-xl bg-stone-900 py-3.5 text-sm font-bold text-white shadow-lg shadow-stone-900/10 hover:bg-stone-800 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all">
-              Увійти
+            <button 
+              type="submit"
+              disabled={loading}
+              className="w-full mt-2 rounded-xl bg-stone-900 py-3.5 text-sm font-bold text-white shadow-lg shadow-stone-900/10 hover:bg-stone-800 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {loading ? <Loader2 className="animate-spin" size={18} /> : "Увійти"}
             </button>
           </form>
 
         </div>
       </div>
+  )
+}
+
+export default function AdminLoginPage() {
+  return (
+    <div className="min-h-screen w-full flex items-center justify-center bg-[#FAFAF9] p-4">
+      <Suspense fallback={<div className="text-stone-400">Завантаження...</div>}>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 }
