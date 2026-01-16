@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
-// Типы данных
 export type CartItem = {
   product: {
     _id: string;
@@ -31,7 +30,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [loaded, setLoaded] = useState(false);
 
-  // 1. Загрузка из localStorage при старте
   useEffect(() => {
     try {
       const stored = localStorage.getItem("gnizde_cart");
@@ -45,14 +43,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // 2. Сохранение в localStorage при изменениях
   useEffect(() => {
     if (loaded) {
       localStorage.setItem("gnizde_cart", JSON.stringify(items));
     }
   }, [items, loaded]);
-
-  // --- Методы ---
 
   const addToCart = (product: CartItem["product"]) => {
     setItems((prev) => {
@@ -81,11 +76,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => setItems([]);
 
-  // Подсчет итогов
   const total = items.reduce((acc, item) => acc + item.product.priceUAH * item.quantity, 0);
   const count = items.reduce((acc, item) => acc + item.quantity, 0);
 
-  // Пока не загрузили из localStorage — не рендерим детей (чтобы не прыгало)
   if (!loaded) return null;
 
   return (
@@ -97,7 +90,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Хук для использования в компонентах
 export function useCart() {
   const context = useContext(CartContext);
   if (!context) {

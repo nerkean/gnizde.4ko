@@ -15,7 +15,6 @@ import {
   Info
 } from "lucide-react";
 
-/* ---------- Утилита компрессии ---------- */
 async function compressImage(file: File, maxWidth = 2000, quality = 0.85): Promise<File> {
   return new Promise((resolve) => {
     const img = new Image();
@@ -47,7 +46,6 @@ async function compressImage(file: File, maxWidth = 2000, quality = 0.85): Promi
   });
 }
 
-/* ---------- Типы ---------- */
 type L = { ua?: string };
 
 type ImageItem = {
@@ -104,7 +102,6 @@ type Block = {
   data: BlockData;
 };
 
-/* ---------- Дефолтные блоки ---------- */
 const DEFAULTS: Record<string, Block> = {
   "home.hero": {
     key: "home.hero",
@@ -194,13 +191,11 @@ const CATALOG_KEYS: Array<keyof typeof DEFAULTS> = ["catalog.categories"];
 const FOOTER_KEYS: Array<keyof typeof DEFAULTS> = ["footer.main"];
 const KEYS = Object.keys(DEFAULTS) as Array<keyof typeof DEFAULTS>;
 
-/* ---------- Страница админки ---------- */
 export default function ContentAdminPage() {
   const [active, setActive] = useState<keyof typeof DEFAULTS>("home.hero");
   const [block, setBlock] = useState<Block>(DEFAULTS["home.hero"]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  // 👇 НОВЫЙ СТЕЙТ ДЛЯ ГАЛОЧКИ
   const [success, setSuccess] = useState(false); 
   const [activeGroup, setActiveGroup] = useState<"home" | "catalog" | "footer">("home");
 
@@ -246,7 +241,7 @@ export default function ContentAdminPage() {
 
   const save = async () => {
     setSaving(true);
-    setSuccess(false); // Сбрасываем успех перед новым сохранением
+    setSuccess(false);
     try {
       const res = await fetch(`/api/content/${block.key}`, {
         method: "POST",
@@ -256,11 +251,10 @@ export default function ContentAdminPage() {
       const json = await res.json();
       if (!json?.ok) throw new Error("Save failed");
       
-      // 👇 ЛОГИКА ОТОБРАЖЕНИЯ УСПЕХА
       setTimeout(() => {
         setSaving(false);
-        setSuccess(true); // Показываем "Зміни збережено"
-        setTimeout(() => setSuccess(false), 3000); // Прячем через 3 секунды
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 3000);
       }, 500);
 
     } catch (e: any) {
@@ -278,7 +272,6 @@ export default function ContentAdminPage() {
            <p className="text-stone-500 mt-2">Редагування текстів, банерів та інформації на сайті.</p>
         </div>
         
-        {/* 👇 ТЕПЕРЬ ПОКАЗЫВАЕТСЯ ТОЛЬКО ПРИ SUCCESS */}
         {success && (
           <div className="hidden md:flex items-center gap-2 text-xs font-medium text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 animate-in fade-in slide-in-from-bottom-2 duration-300">
              <Check size={14} />
@@ -433,10 +426,6 @@ export default function ContentAdminPage() {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* SUB-COMPONENTS                              */
-/* -------------------------------------------------------------------------- */
-
 function GroupTab({ active, onClick, icon: Icon, label }: { active: boolean, onClick: () => void, icon: any, label: string }) {
    return (
       <button 
@@ -549,7 +538,6 @@ function ImagesEditor({ images, onChange, max = 99 }: { images: ImageItem[], onC
                {img.kind === "video" || img.url?.match(/\.(mp4|webm)$/i) ? (
                   <video src={img.url} className="w-full h-full object-cover" muted />
                ) : (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <img src={img.url} alt="" className="w-full h-full object-cover" />
                )}
                <button onClick={() => remove(i)} className="absolute top-2 right-2 p-1.5 bg-rose-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition shadow-sm">

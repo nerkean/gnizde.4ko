@@ -1,6 +1,6 @@
 import CartPageClient from "@/components/cart/CartPageClient";
 
-export const dynamic = "force-dynamic"; // 💥 Отключает static export
+export const dynamic = "force-dynamic"; 
 
 export const metadata = {
   title: "Кошик • PAVUK",

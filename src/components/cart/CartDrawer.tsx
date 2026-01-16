@@ -7,7 +7,6 @@ import { X, Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 
-// Тип данных, которые приходят с API
 export type MiniProduct = {
   _id: string;
   title_ua: string;
@@ -24,7 +23,6 @@ export default function CartDrawer() {
   const [items, setItems] = useState<{ id: string; qty: number }[]>([]);
   const overlayRef = useRef<HTMLDivElement | null>(null);
 
-  // 1. Читаем корзину
   useEffect(() => {
     const update = () => setItems(getCartItems());
     update();
@@ -36,7 +34,6 @@ export default function CartDrawer() {
     };
   }, []);
 
-  // 2. Блокируем скролл фона
   useEffect(() => {
     if (open) {
       const scrollY = window.scrollY;
@@ -52,11 +49,9 @@ export default function CartDrawer() {
     }
   }, [open]);
 
-  // 3. Загружаем данные о товарах
   useEffect(() => {
     if (!open || items.length === 0) return;
 
-    // Ищем ID, данных о которых у нас еще нет
     const idsToFetch = items
       .map((i) => i.id)
       .filter((id) => !products.find((p) => p._id === id));
@@ -70,12 +65,10 @@ export default function CartDrawer() {
     })
       .then((r) => r.json())
       .then((data) => {
-        // 👇 ИСПРАВЛЕНИЕ: читаем data.items вместо data.products
         if (data && Array.isArray(data.items)) {
           setProducts((prev) => {
             const newMap = new Map(prev.map((p) => [p._id, p]));
             
-            // Маппим пришедшие данные (id -> _id, title -> title_ua)
             data.items.forEach((item: any) => {
               newMap.set(item.id, {
                 _id: item.id,
@@ -90,16 +83,14 @@ export default function CartDrawer() {
         }
       })
       .catch((e) => console.error("Error fetching cart products:", e));
-  }, [open, items]); // removed 'products' from dependency to avoid loop, logical check inside handles it
+  }, [open, items]);
 
-  // Создаем карту для быстрого доступа
   const map = useMemo(() => {
     const m = new Map<string, MiniProduct>();
     for (const p of products) m.set(p._id, p);
     return m;
   }, [products]);
 
-  // Собираем итоговые строки
   const lines = items.map((i) => {
     const p = map.get(i.id);
     const price = p?.priceUAH ?? 0;
@@ -108,11 +99,10 @@ export default function CartDrawer() {
       qty: i.qty,
       price,
       lineTotal: price * i.qty,
-      // Если товара еще нет в загруженных, показываем заглушку
       title: p ? p.title_ua : "Завантаження...", 
       image: p?.images?.[0] || "",
       slug: p?.slug || "#",
-      loading: !p, // Флаг загрузки
+      loading: !p,
     };
   });
 
@@ -124,7 +114,6 @@ export default function CartDrawer() {
     <AnimatePresence>
       {open && (
         <>
-          {/* Overlay */}
           <motion.div
             ref={overlayRef}
             onClick={close}
@@ -134,7 +123,6 @@ export default function CartDrawer() {
             exit={{ opacity: 0 }}
           />
 
-          {/* Drawer */}
           <motion.aside
             className="fixed right-0 top-0 z-[70] h-[100dvh] w-full max-w-[420px] bg-white shadow-2xl flex flex-col border-l border-stone-100"
             initial={{ x: "100%" }}
@@ -142,7 +130,6 @@ export default function CartDrawer() {
             exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            {/* Header */}
             <div className="flex items-center justify-between border-b border-stone-100 px-6 py-5 bg-white">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-50 text-amber-600">
@@ -161,7 +148,6 @@ export default function CartDrawer() {
               </button>
             </div>
 
-            {/* Content */}
             <div className="flex-1 overflow-y-auto px-6 py-6 scrollbar-thin scrollbar-thumb-stone-200">
               {lines.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
@@ -199,7 +185,6 @@ export default function CartDrawer() {
                       }}
                       className="group flex gap-4"
                     >
-                      {/* Картинка */}
                       <Link 
                         href={l.slug !== "#" ? `/product/${l.slug}` : "#"} 
                         onClick={l.slug !== "#" ? close : undefined}
@@ -218,7 +203,6 @@ export default function CartDrawer() {
                         )}
                       </Link>
 
-                      {/* Инфо */}
                       <div className="flex flex-1 flex-col justify-between py-1">
                         <div className="flex justify-between gap-2">
                           <Link 
@@ -244,7 +228,6 @@ export default function CartDrawer() {
                             {l.price.toLocaleString("uk-UA")} ₴
                           </div>
 
-                          {/* Счетчик */}
                           <div className="flex items-center rounded-lg border border-stone-200 bg-white p-0.5 shadow-sm">
                             <button
                               onClick={() => {
@@ -276,7 +259,6 @@ export default function CartDrawer() {
               )}
             </div>
 
-            {/* Footer */}
             {lines.length > 0 && (
               <div className="border-t border-stone-100 bg-stone-50/50 p-6 space-y-4">
                 <div className="flex items-center justify-between text-lg font-medium">

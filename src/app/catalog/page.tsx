@@ -7,8 +7,6 @@ import CatalogFilters from "@/components/catalog/CatalogFilters";
 import CatalogControls from "@/components/catalog/CatalogControls";
 import type { Metadata } from "next";
 
-/* ---------------- ТИПИ ТА ХЕЛПЕРИ ---------------- */
-
 type SP = Record<string, string>;
 type Props = { searchParams: SP } | { searchParams: Promise<SP> };
 
@@ -80,8 +78,6 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
-/* ---------------- КОНСТАНТИ КАТЕГОРІЙ ---------------- */
-
 const BASE_TOP_GROUPS = [
   { slug: "pavuky", title: "Павуки", image: "/images/categories/pavuky-main.jpg", desc: "Традиційні обереги для дому" },
   { slug: "vinky", title: "Вінки", image: "/images/categories/zlaky.jpg", desc: "Прикраси зі злаків та трав" },
@@ -114,9 +110,6 @@ const ALL_CATEGORY_META = [
   ...BASE_OTHER_SUBCATEGORIES,
 ];
 
-/* ---------------- КОМПОНЕНТИ UI ---------------- */
-
-// 1. Красива картка категорії
 function CategoryCard({
   slug,
   title,
@@ -145,11 +138,9 @@ function CategoryCard({
         className="object-cover transition-transform duration-1000 group-hover:scale-105"
         sizes="(max-width: 768px) 100vw, 33vw"
       />
-      
-      {/* Градієнт оверлей */}
+
       <div className="absolute inset-0 bg-gradient-to-t from-stone-900/90 via-stone-900/20 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-80" />
-      
-      {/* Контент */}
+
       <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8">
         <div className="transform transition-transform duration-500 translate-y-2 group-hover:translate-y-0">
           <Sparkles className="mb-3 h-5 w-5 text-amber-200/80 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -171,7 +162,6 @@ function CategoryCard({
   );
 }
 
-// 2. Хлібні крихти для навігації
 function Breadcrumbs({ items }: { items: { label: string; href?: string }[] }) {
   return (
     <nav className="mb-8 flex flex-wrap items-center gap-2 text-sm text-stone-500">
@@ -194,12 +184,9 @@ function Breadcrumbs({ items }: { items: { label: string; href?: string }[] }) {
   );
 }
 
-/* ---------------- MAIN COMPONENT ---------------- */
-
 export default async function CatalogPage(props: Props) {
   const sp = await resolveSearchParams((props as any).searchParams);
 
-  // Отримуємо картинки з CMS (динамічні)
   const catalogCategoriesContent = await fetchCatalogCategoriesContent();
   const imageMap = new Map<string, string>();
   if (catalogCategoriesContent) {
@@ -221,7 +208,6 @@ export default async function CatalogPage(props: Props) {
   const VINKY_SUBCATEGORIES = applyImages(BASE_VINKY_SUBCATEGORIES);
   const OTHER_SUBCATEGORIES = applyImages(BASE_OTHER_SUBCATEGORIES);
   
-  // 1. ГОЛОВНА СТОРІНКА КАТАЛОГУ (ВИБІР ГРУПИ)
   if (!sp.category && !sp.group) {
     return (
       <section className="min-h-screen py-16 px-4 sm:px-6 bg-stone-50">
@@ -253,7 +239,6 @@ export default async function CatalogPage(props: Props) {
     );
   }
 
-  // 2. СТОРІНКА ПІДКАТЕГОРІЙ (ГРУПА)
   let subcategories: typeof BASE_PAVUKY_SUBCATEGORIES = [];
   let groupTitle = "";
   
@@ -297,29 +282,23 @@ export default async function CatalogPage(props: Props) {
     );
   }
 
-  // 3. СТОРІНКА СПИСКУ ТОВАРІВ
   const data = await fetchCatalog(sp);
   const { products, total, totalPages, facets } = data;
   const hasProducts = products.length > 0;
   
-  // Визначаємо назву для хлібних крихт
   const categoryTitle = ALL_CATEGORY_META.find((c) => c.slug === sp.category)?.title || "Всі товари";
   let parentGroup = { label: "Каталог", href: "/catalog" };
   
   if (sp.group) {
-    // Якщо є група в URL, хоча тут ми вже в категорії, можна спробувати знайти parent
-    // Для спрощення просто показуємо категорію
   }
 
   return (
     <section className="relative w-full min-h-screen bg-white">
-      {/* Декоративний фон зверху */}
       <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-amber-50/50 to-transparent -z-10" />
 
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         <Breadcrumbs items={[{ label: categoryTitle }]} />
 
-        {/* Заголовок категорії */}
         <header className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="max-w-3xl">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-stone-900 leading-tight">
@@ -337,24 +316,19 @@ export default async function CatalogPage(props: Props) {
           )}
         </header>
 
-        {/* Layout: Фільтри + Сітка */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-          
-          {/* Sidebar */}
+
           <aside className="hidden lg:block lg:col-span-3 space-y-8">
             <CatalogFilters facets={facets} variant="desktop" />
           </aside>
 
-          {/* Main Content */}
           <main className="lg:col-span-9 min-w-0">
-            {/* Мобільні фільтри та сортування */}
             <div className="sticky top-20 z-10 mb-6 lg:static lg:mb-8">
                <div className="rounded-2xl border border-stone-200 bg-white/80 backdrop-blur-xl px-4 py-3 shadow-sm lg:border-none lg:bg-transparent lg:shadow-none lg:p-0">
                   <CatalogControls facets={facets} />
                </div>
             </div>
 
-            {/* Сітка товарів */}
             {!hasProducts ? (
               <div className="flex flex-col items-center justify-center rounded-[2rem] border border-stone-100 bg-stone-50/50 py-20 text-center">
                 <div className="mb-4 rounded-full bg-white p-4 shadow-sm">

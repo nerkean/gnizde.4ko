@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import ImageKit from "imagekit";
 
-// ВАЖНО: этот роут должен работать в NodeJS, не на Edge
 export const runtime = "nodejs";
 
 const imagekit = new ImageKit({
@@ -14,14 +13,13 @@ export async function POST(req: Request) {
   try {
     const { file, fileName } = await req.json();
 
-    // поддержим и data:URL, и “чистый” base64
     const payload =
       typeof file === "string" && file.startsWith("data:")
         ? file
         : `data:image/*;base64,${file}`;
 
     const upload = await imagekit.upload({
-      file: payload,   // base64 dataURL или URL файла
+      file: payload,
       fileName: fileName || `upload_${Date.now()}.jpg`,
     });
 

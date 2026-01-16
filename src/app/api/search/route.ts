@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Product from "@/models/Product";
 
-// быстрая защита от слишком широких запросов
 const MAX_LIMIT = 8;
 
 export async function GET(req: Request) {
@@ -15,7 +14,6 @@ const limit = Math.min(isNaN(rawLimit) ? 8 : rawLimit, MAX_LIMIT);
 
   await connectDB();
 
-  // Простая стратегия: begins-with имеет больший приоритет, потом contains
   const begins = await Product.find({
     $or: [
       { title_ua: new RegExp("^" + escapeRegExp(q), "i") },

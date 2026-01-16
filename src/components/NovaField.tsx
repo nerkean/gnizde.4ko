@@ -15,7 +15,6 @@ export default function NovaField({
   const [branches, setBranches] = useState<{ ref: string; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Загружаем CityRef при изменении города
   useEffect(() => {
     if (!city || city.length < 2) return;
     const controller = new AbortController();
@@ -37,7 +36,6 @@ export default function NovaField({
     return () => controller.abort();
   }, [city]);
 
-  // Загружаем отделения
   useEffect(() => {
     if (!cityRef) return;
     setLoading(true);

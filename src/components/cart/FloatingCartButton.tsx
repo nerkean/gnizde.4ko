@@ -5,12 +5,12 @@ import { useCartUI, CartUIState } from "@/lib/cart-ui";
 import { getCartItems } from "@/lib/cart";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { usePathname } from "next/navigation"; // 👇 1. Импортируем хук пути
+import { usePathname } from "next/navigation"; 
 
 export default function FloatingCartButton() {
   const toggle = useCartUI((s: CartUIState) => s.toggleCart);
   const isOpen = useCartUI((s: CartUIState) => s.open);
-  const pathname = usePathname(); // 👇 2. Получаем текущий путь
+  const pathname = usePathname(); 
   
   const [count, setCount] = useState(0);
   const [isClient, setIsClient] = useState(false);
@@ -39,8 +39,6 @@ export default function FloatingCartButton() {
   if (!isClient) return null;
   if (isOpen) return null;
 
-  // 👇 3. ПРОВЕРКА: Если мы на странице товара, скрываем эту кнопку
-  // (чтобы она не перекрывала MobileBuyBar)
   if (pathname?.startsWith("/product/")) {
     return null;
   }

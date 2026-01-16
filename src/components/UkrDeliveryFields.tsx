@@ -20,7 +20,6 @@ export default function UkrDeliveryFields({
   errorCity,
   errorBranch,
 }: Props) {
-  // --- Города ---
   const [cityQuery, setCityQuery] = useState(city);
   const [cities, setCities] = useState<any[]>([]);
   const [loadingCities, setLoadingCities] = useState(false);
@@ -28,7 +27,6 @@ export default function UkrDeliveryFields({
 
   const cityInputRef = useRef<HTMLInputElement>(null);
 
-  // 1. Поиск города (через API на OSM)
   useEffect(() => {
     if (!cityQuery || cityQuery === city) return;
 
@@ -55,7 +53,6 @@ export default function UkrDeliveryFields({
     return () => clearTimeout(t);
   }, [cityQuery, city]);
 
-  // Закрытие при клике вне
   useEffect(() => {
     const fn = (e: MouseEvent) => {
       if (cityInputRef.current && !cityInputRef.current.contains(e.target as Node)) {
@@ -69,7 +66,6 @@ export default function UkrDeliveryFields({
   return (
     <div className="space-y-4">
       
-      {/* --- ПОЛЕ ГОРОДА (Поиск через OSM) --- */}
       <div className="relative" ref={cityInputRef}>
         <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-stone-500 pl-1">
           Населений пункт
@@ -95,7 +91,6 @@ export default function UkrDeliveryFields({
         </div>
         {errorCity && <p className="mt-1.5 text-xs font-medium text-red-600 pl-1">{errorCity}</p>}
 
-        {/* Выпадающий список городов */}
         {showCityList && cities.length > 0 && (
           <div className="absolute left-0 right-0 top-[110%] z-20 max-h-60 overflow-auto rounded-xl border border-stone-200 bg-white shadow-xl">
             {cities.map((c: any, i: number) => (
@@ -107,7 +102,6 @@ export default function UkrDeliveryFields({
                   setCity(name);
                   setCityQuery(name);
                   setShowCityList(false);
-                  // 👇 ИСПРАВЛЕНИЕ: Убрали лишние вызовы несуществующих функций
                 }}
                 className="w-full px-4 py-2.5 text-left text-sm hover:bg-amber-50 transition-colors border-b border-stone-50 last:border-0"
               >
@@ -118,7 +112,6 @@ export default function UkrDeliveryFields({
         )}
       </div>
 
-      {/* --- ПОЛЕ ИНДЕКСА (Простое) --- */}
       <div>
         <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-stone-500 pl-1">
           Поштовий індекс

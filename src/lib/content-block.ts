@@ -6,7 +6,7 @@ export async function getContentBlock(key: string) {
 
   try {
     const doc = await ContentBlock.findOne({ key }).lean();
-    return doc as any; // если захочешь — потом типизируем красиво
+    return doc as any;
   } catch (e) {
     console.error("getContentBlock error:", e);
     return null;

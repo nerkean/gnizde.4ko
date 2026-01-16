@@ -12,10 +12,7 @@ import {
   ChevronRight
 } from "lucide-react";
 
-// --- Хелпери ---
-
 function fmtDate(d: Date) {
-  // 👇 Локаль uk-UA
   return new Date(d).toLocaleString("uk-UA", {
     day: "numeric",
     month: "short",
@@ -34,7 +31,6 @@ const statusColors: Record<string, string> = {
   sandbox: "bg-gray-100 text-gray-600 border-gray-200",
 };
 
-// 👇 Українські назви статусів
 const statusLabels: Record<string, string> = {
   new: "Новий",
   pending: "Очікує",
@@ -58,14 +54,11 @@ function StatusBadge({ status }: { status: string }) {
 
 function DeliveryBadge({ type }: { type?: string }) {
   if (!type) return <span className="text-stone-400">—</span>;
-  // 👇 Українські назви доставки
   if (type === "nova") return <span className="text-red-600 font-bold text-xs bg-red-50 px-1 rounded">НП</span>;
   if (type === "ukr") return <span className="text-yellow-600 font-bold text-xs bg-yellow-50 px-1 rounded">Укрпошта</span>;
   if (type === "courier") return <span className="text-stone-700 font-bold text-xs bg-stone-100 px-1 rounded">Курʼєр</span>;
   return <span>{type}</span>;
 }
-
-// --- Основний компонент ---
 
 export default async function OrdersPage({
   searchParams,
@@ -79,7 +72,6 @@ export default async function OrdersPage({
   const q = (sp.q || "").trim();
   const status = sp.status?.trim() || "";
 
-  // Фільтрація
   const filter: any = {};
   if (status) filter.status = status;
   if (q) {
@@ -100,7 +92,6 @@ export default async function OrdersPage({
 
   const totalPages = Math.max(1, Math.ceil(total / limit));
 
-  // Генерація посилань пагінації
   const genPageLink = (p: number) => {
     const params = new URLSearchParams(sp);
     params.set("page", String(p));
@@ -109,10 +100,8 @@ export default async function OrdersPage({
 
   return (
     <div className="space-y-6 pb-20">
-      {/* Шапка */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          {/* 👇 Український заголовок */}
           <h1 className="text-2xl font-bold text-stone-900 tracking-tight">Замовлення</h1>
           <p className="text-sm text-stone-500 mt-1">
             Знайдено: <b>{total}</b> шт.
@@ -127,23 +116,19 @@ export default async function OrdersPage({
         </Link>
       </div>
 
-      {/* Панель фільтрів */}
       <div className="bg-white p-4 rounded-2xl shadow-sm border border-stone-200">
         <form className="flex flex-col md:flex-row gap-4 items-end md:items-center">
-          
-          {/* Пошук */}
+
           <div className="w-full md:w-auto flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
             <input
               name="q"
               defaultValue={q}
-              // 👇 Український плейсхолдер
               placeholder="Пошук: ID, ім'я, телефон..."
               className="w-full pl-9 pr-4 py-2 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-amber-500/20 text-sm"
             />
           </div>
 
-          {/* Статус */}
           <div className="w-full md:w-48 relative">
             <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
             <select
@@ -151,7 +136,6 @@ export default async function OrdersPage({
               defaultValue={status}
               className="w-full pl-9 pr-8 py-2 rounded-xl border border-stone-300 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 text-sm appearance-none cursor-pointer"
             >
-              {/* 👇 Українські опції */}
               <option value="">Всі статуси</option>
               <option value="new">🔵 Нові</option>
               <option value="pending">🟡 Очікують</option>
@@ -175,13 +159,11 @@ export default async function OrdersPage({
         </form>
       </div>
 
-      {/* Таблиця */}
       <div className="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead className="bg-stone-50 text-stone-500 font-medium border-b border-stone-200">
               <tr>
-                {/* 👇 Українські заголовки таблиці */}
                 <th className="px-6 py-4 w-32">ID / Дата</th>
                 <th className="px-6 py-4">Клієнт</th>
                 <th className="px-6 py-4">Доставка</th>
@@ -197,7 +179,6 @@ export default async function OrdersPage({
                 
                 return (
                   <tr key={o._id} className="hover:bg-amber-50/30 transition group">
-                    {/* ID + Дата */}
                     <td className="px-6 py-4 align-top">
                       <Link
                         href={`/admin/orders/${o._id}`}
@@ -211,7 +192,6 @@ export default async function OrdersPage({
                       </div>
                     </td>
 
-                    {/* Клієнт */}
                     <td className="px-6 py-4 align-top">
                       <div className="font-medium text-stone-900 flex items-center gap-2">
                         <User className="w-3.5 h-3.5 text-stone-400" />
@@ -222,7 +202,6 @@ export default async function OrdersPage({
                       </div>
                     </td>
 
-                    {/* Доставка */}
                     <td className="px-6 py-4 align-top">
                       <div className="flex items-center gap-2 text-stone-700">
                         <DeliveryBadge type={o.delivery?.type} />
@@ -232,7 +211,6 @@ export default async function OrdersPage({
                       </div>
                     </td>
 
-                    {/* Товари (кількість) */}
                     <td className="px-6 py-4 align-top text-center">
                       <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-stone-50 border border-stone-200 text-xs font-medium text-stone-600">
                         <Package className="w-3 h-3" />
@@ -240,7 +218,6 @@ export default async function OrdersPage({
                       </span>
                     </td>
 
-                    {/* Сума */}
                     <td className="px-6 py-4 align-top">
                       <div className="font-bold text-stone-900 whitespace-nowrap">
                         {o.total?.toLocaleString("uk-UA")} <span className="text-xs font-normal text-stone-500">₴</span>
@@ -250,12 +227,10 @@ export default async function OrdersPage({
                       )}
                     </td>
 
-                    {/* Статус */}
                     <td className="px-6 py-4 align-top">
                       <StatusBadge status={o.status} />
                     </td>
 
-                    {/* Дії */}
                     <td className="px-6 py-4 align-top text-right">
                       <div className="flex justify-end">
                         <AdminActions orderId={String(o._id)} current={o.status} />
@@ -287,7 +262,6 @@ export default async function OrdersPage({
         </div>
       </div>
 
-      {/* Пагінація */}
       {totalPages > 1 && (
         <div className="flex justify-center items-center gap-2 mt-6">
           {page > 1 && (

@@ -37,7 +37,6 @@ export default function SearchBox({
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Хоткей "/" для фокуса
   useEffect(() => {
     if (variant !== "desktop") return;
     const onKey = (e: KeyboardEvent) => {
@@ -50,7 +49,6 @@ export default function SearchBox({
     return () => window.removeEventListener("keydown", onKey);
   }, [variant]);
 
-  // Клик вне компонента
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
@@ -61,7 +59,6 @@ export default function SearchBox({
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  // Поиск с debounce
   useEffect(() => {
     if (!q.trim()) {
       setItems([]);
@@ -97,7 +94,7 @@ export default function SearchBox({
     
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setActive((prev) => (prev + 1) % (items.length + 1)); // +1 для кнопки "Все результаты"
+      setActive((prev) => (prev + 1) % (items.length + 1));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setActive((prev) => (prev - 1 + items.length + 1) % (items.length + 1));
@@ -125,7 +122,6 @@ export default function SearchBox({
 
   return (
     <div ref={containerRef} className="relative w-full">
-      {/* INPUT */}
       <div className="relative group">
         <div className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-amber-600 transition-colors">
           {loading ? (
@@ -162,7 +158,6 @@ export default function SearchBox({
         )}
       </div>
 
-      {/* DROPDOWN */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -219,7 +214,6 @@ export default function SearchBox({
                   </li>
                 ))}
                 
-                {/* Ссылка "Все результаты" */}
                 <li className={active === items.length ? "bg-amber-50" : ""}>
                   <Link
                     href={`/search?q=${encodeURIComponent(q)}`}

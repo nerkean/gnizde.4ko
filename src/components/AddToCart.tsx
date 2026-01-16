@@ -20,15 +20,12 @@ export default function AddToCart({
   const [isLoading, setIsLoading] = useState(false);
 
   const onClick = useCallback(async (e: React.MouseEvent) => {
-    e.preventDefault(); // На всякий случай, чтобы не переходило по ссылке, если кнопка внутри Link
+    e.preventDefault(); 
     if (!productId || isLoading) return;
 
     setIsLoading(true);
 
     try {
-      // Имитация задержки для красоты (опционально, чтобы пользователь успел увидеть спиннер)
-      // await new Promise(r => setTimeout(r, 300)); 
-
       await addToCart(productId, qty);
       notifyCartUpdated();
       openCart();

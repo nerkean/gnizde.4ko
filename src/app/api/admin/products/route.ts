@@ -33,7 +33,6 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ ok: true, page, limit, total, items });
 }
 
-// POST /api/admin/products
 export async function POST(req: NextRequest) {
   await connectDB();
   const body = await req.json().catch(() => ({}));
@@ -49,7 +48,6 @@ export async function POST(req: NextRequest) {
   const showDetailsBlocks =
     body.showDetailsBlocks != null ? Boolean(body.showDetailsBlocks) : false;
 
-  // 👇 ДОБАВИЛ ПОЛУЧЕНИЕ ТЕКСТА
   const details_ua = (body.details_ua ? String(body.details_ua) : "").trim();
   const delivery_ua = (body.delivery_ua ? String(body.delivery_ua) : "").trim();
 
@@ -68,7 +66,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // slug
   let slug = String(body.slug || "").trim();
   if (!slug) slug = toSlug(title_ua);
   if (!slug) {
@@ -92,8 +89,6 @@ export async function POST(req: NextRequest) {
     images,
     showDetailsBlocks,
     availability,
-    
-    // 👇 ДОБАВИЛ СОХРАНЕНИЕ В БАЗУ
     details_ua,
     delivery_ua,
   });

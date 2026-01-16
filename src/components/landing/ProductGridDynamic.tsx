@@ -21,7 +21,6 @@ export default function ProductGridDynamic({ products }: { products: CardProduct
           }}
           className="card card-hover"
         >
-          {/* Внутри карточки оставляем твой ProductCard (он уже со своим стилем) */}
           <ProductCard product={p} />
         </motion.div>
       ))}

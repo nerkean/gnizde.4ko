@@ -1,40 +1,58 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trash2, Plus, Bell, Info, Send, Loader2 } from "lucide-react";
+import { Trash2, Plus, Bell, Info, Send, Loader2, Lock, ShieldCheck, Save } from "lucide-react";
 
 export default function SettingsPage() {
   const [ids, setIds] = useState<string[]>([]);
   const [newId, setNewId] = useState("");
+
+  const [adminLogin, setAdminLogin] = useState("");
+  const [adminPassword, setAdminPassword] = useState("");
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // --- Загрузка ---
   useEffect(() => {
     fetch("/api/content/admin.settings")
       .then((res) => res.json())
       .then((json) => {
         const remoteData = json?.doc?.data;
-        if (remoteData && Array.isArray(remoteData.telegramChatIds)) {
-          setIds(remoteData.telegramChatIds);
+        if (remoteData) {
+          if (Array.isArray(remoteData.telegramChatIds)) {
+            setIds(remoteData.telegramChatIds);
+          }
+          if (remoteData.login) setAdminLogin(remoteData.login);
+          if (remoteData.password) setAdminPassword(remoteData.password);
         }
       })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
 
-  // --- Сохранение ---
-  const saveSettings = async (newIds: string[]) => {
+  const updateSettings = async (newData: Partial<{ telegramChatIds: string[], login: string, password: string }>) => {
     setSaving(true);
+    
+    const fullData = {
+      telegramChatIds: newData.telegramChatIds ?? ids,
+      login: newData.login ?? adminLogin,
+      password: newData.password ?? adminPassword,
+    };
+
     try {
       await fetch("/api/content/admin.settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type: "settings",
-          data: { telegramChatIds: newIds },
+          data: fullData,
         }),
       });
+
+      if (newData.telegramChatIds) setIds(newData.telegramChatIds);
+      if (newData.login) setAdminLogin(newData.login);
+      if (newData.password) setAdminPassword(newData.password);
+
     } catch (e) {
       alert("Помилка збереження");
     } finally {
@@ -49,16 +67,23 @@ export default function SettingsPage() {
       return;
     }
     const updated = [...ids, newId.trim()];
-    setIds(updated);
-    setNewId("");
-    saveSettings(updated);
+    setNewId(""); 
+    updateSettings({ telegramChatIds: updated });
   };
 
   const removeId = (idToRemove: string) => {
     if (!confirm("Ви впевнені, що хочете видалити цей ID?")) return;
     const updated = ids.filter((id) => id !== idToRemove);
-    setIds(updated);
-    saveSettings(updated);
+    updateSettings({ telegramChatIds: updated });
+  };
+
+  const saveAuth = () => {
+    if (!adminLogin.trim() || !adminPassword.trim()) {
+      alert("Логін та пароль не можуть бути порожніми");
+      return;
+    }
+    updateSettings({ login: adminLogin, password: adminPassword });
+    alert("Дані входу оновлено ✅");
   };
 
   if (loading) {
@@ -72,15 +97,67 @@ export default function SettingsPage() {
   return (
     <div className="max-w-3xl mx-auto pb-20">
       
-      {/* Заголовок страницы */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-stone-900">Налаштування</h1>
-        <p className="text-stone-500 mt-2">Керування сповіщеннями та системними параметрами.</p>
+        <p className="text-stone-500 mt-2">Керування доступами та сповіщеннями.</p>
       </div>
 
-      <div className="grid gap-6">
+      <div className="grid gap-8">
         
-        {/* Карточка Telegram */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-100 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)]">
+          <div className="flex items-start gap-4 mb-6">
+            <div className="h-12 w-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
+               <ShieldCheck size={24} />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-stone-900">Доступ до адмінки</h2>
+              <p className="text-stone-500 text-sm mt-1 leading-relaxed">
+                Змініть логін та пароль для входу в панель керування.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-5 max-w-lg">
+            <div>
+              <label className="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">
+                Логін адміністратора
+              </label>
+              <input
+                type="text"
+                value={adminLogin}
+                onChange={(e) => setAdminLogin(e.target.value)}
+                className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-900/10 focus:border-stone-400 transition"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">
+                Пароль
+              </label>
+              <div className="relative">
+                <input
+                  type="text" 
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  className="w-full pl-4 pr-10 py-3 bg-stone-50 border border-stone-200 rounded-xl text-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-900/10 focus:border-stone-400 transition font-mono"
+                />
+                <Lock className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400" size={16} />
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <button
+                onClick={saveAuth}
+                disabled={saving}
+                className="flex items-center gap-2 bg-stone-900 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-stone-800 disabled:opacity-70 transition shadow-lg shadow-stone-900/10"
+              >
+                {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+                Зберегти нові дані
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-100 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)]">
           
           <div className="flex items-start gap-4 mb-6">
@@ -90,13 +167,11 @@ export default function SettingsPage() {
             <div>
               <h2 className="text-xl font-bold text-stone-900">Сповіщення в Telegram</h2>
               <p className="text-stone-500 text-sm mt-1 leading-relaxed">
-                Сюди приходитимуть повідомлення про нові замовлення. 
-                Ви можете додати кілька отримувачів (менеджерів).
+                Сюди приходитимуть повідомлення про нові замовлення.
               </p>
             </div>
           </div>
 
-          {/* Инфо-блок */}
           <div className="bg-stone-50 rounded-xl p-4 mb-8 flex items-start gap-3 border border-stone-200/60">
              <Info className="text-stone-400 mt-0.5 shrink-0" size={18} />
              <div className="text-sm text-stone-600">
@@ -113,7 +188,6 @@ export default function SettingsPage() {
              </div>
           </div>
 
-          {/* Список ID */}
           <div className="space-y-3 mb-8">
             <h3 className="text-xs font-bold text-stone-400 uppercase tracking-wider mb-2">
               Активні отримувачі ({ids.length})
@@ -151,7 +225,6 @@ export default function SettingsPage() {
             ))}
           </div>
 
-          {/* Форма добавления */}
           <div>
             <label className="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">
               Додати нового отримувача

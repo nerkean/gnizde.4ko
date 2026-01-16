@@ -32,7 +32,6 @@ export default function ProductPageClient({
         <h1 className="text-3xl font-semibold">{product.title_ua}</h1>
         <div className="mt-2 text-xl">{product.priceUAH} ₴</div>
         <p className="mt-6 text-stone-700">{product.desc_ua}</p>
-        {/* ВАЖНО: сюда уходит ИМЕННО product._id */}
         <AddToCart productId={product._id} className="mt-6" />
       </div>
     </div>

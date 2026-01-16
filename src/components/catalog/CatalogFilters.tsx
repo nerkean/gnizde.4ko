@@ -23,12 +23,10 @@ export default function CatalogFilters({
   const [minPrice, setMinPrice] = useState(sp.get("minPrice") || "");
   const [maxPrice, setMaxPrice] = useState(sp.get("maxPrice") || "");
 
-  // availability: 'in_stock' | 'on_order' | 'out_of_stock' | null
   const [onlyInStock, setOnlyInStock] = useState(
     sp.get("availability") === "in_stock"
   );
 
-  // Синхронизация при смене урла (назад/вперёд)
   useEffect(() => {
     setMinPrice(sp.get("minPrice") || "");
     setMaxPrice(sp.get("maxPrice") || "");
@@ -52,7 +50,6 @@ export default function CatalogFilters({
       params.delete("availability");
     }
 
-    // При изменении фильтров — всегда на первую страницу
     params.set("page", "1");
 
     router.push(`${pathname}?${params.toString()}`);
@@ -77,7 +74,6 @@ export default function CatalogFilters({
           : "p-5 rounded-t-[2rem]",
       ].join(" ")}
     >
-      {/* Заголовок + Сброс */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-stone-100 text-stone-900">
@@ -102,7 +98,6 @@ export default function CatalogFilters({
 
       <div className="space-y-4">
         
-        {/* Блок цены */}
         <div className="space-y-3 p-4 rounded-2xl bg-stone-50 border border-stone-100">
           <p className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
             Ціна, ₴
@@ -136,7 +131,6 @@ export default function CatalogFilters({
           </div>
         </div>
 
-        {/* Тумблер "Лише в наявності" */}
         <label className="flex cursor-pointer items-center justify-between gap-3 rounded-2xl bg-stone-50 border border-stone-100 p-4 transition-colors hover:bg-stone-100 hover:border-stone-200">
           <span className="text-sm font-semibold text-stone-900">
             Лише в наявності
@@ -148,17 +142,13 @@ export default function CatalogFilters({
               checked={onlyInStock}
               onChange={() => setOnlyInStock((v) => !v)}
             />
-            {/* Основа свитча */}
             <div className="h-6 w-11 rounded-full bg-stone-300 transition-all peer-checked:bg-stone-900"></div>
-            {/* Кружок свитча */}
             <div className="absolute left-[3px] top-[3px] h-[18px] w-[18px] rounded-full bg-white shadow-sm transition-all peer-checked:translate-x-5 flex items-center justify-center">
-                {/* Галочка внутри кружка (появляется только когда включено) */}
                 <Check size={10} className={`text-stone-900 transition-opacity ${onlyInStock ? "opacity-100" : "opacity-0"}`} strokeWidth={4} />
             </div>
           </div>
         </label>
 
-        {/* Кнопка "Применить" */}
         <button
           type="button"
           onClick={apply}

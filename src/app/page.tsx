@@ -43,7 +43,6 @@ export const metadata: Metadata = {
 export const dynamic = "force-static";
 export const revalidate = 60;
 
-// ---------- ТИПИЗАЦИЯ (Оставляем как было, чтобы не сломать CMS) ----------
 type LangText = string | { ua?: string; uk?: string };
 type HeroImage = {
   url?: string;
@@ -115,7 +114,6 @@ type AboutDocData = {
   cta?: { label?: { ua?: string; uk?: string } | string; href?: string };
 };
 
-// ---------- FETCHING DATA (Логика без изменений) ----------
 async function getAboutDoc(): Promise<(AboutDocData & { updatedAt?: string }) | null> {
   await connectDB();
   const doc = (await ContentBlock.findOne({ key: "home.about" })
@@ -148,7 +146,6 @@ async function getGiftDoc(): Promise<GiftStoryData | null> {
   return doc?.data ?? null;
 }
 
-// ---------- PAGE COMPONENT ----------
 export default async function HomePage() {
   const products = await getAllProducts();
 
@@ -168,7 +165,6 @@ export default async function HomePage() {
 
   const featured = plain.slice(0, 8);
 
-  // --- HERO DATA ---
   const hero = await getHeroDoc();
   const heroTitle =
     typeof hero?.title === "string" ? hero.title : hero?.title?.ua || hero?.title?.uk || "Соломʼяні прикраси";
@@ -192,7 +188,6 @@ export default async function HomePage() {
         { src: "/images/IMG_7624.JPG", alt: "Ручна робота з натуральної соломи" },
       ];
 
-  // --- FEATURES DATA ---
   const featuresDoc = await getFeaturesDoc();
   const featuresLabel = typeof featuresDoc?.label === "string" ? featuresDoc.label : featuresDoc?.label?.ua || featuresDoc?.label?.uk;
   const featuresHeading = typeof featuresDoc?.heading === "string" ? featuresDoc.heading : featuresDoc?.heading?.ua || featuresDoc?.heading?.uk;
@@ -202,7 +197,6 @@ export default async function HomePage() {
     text: typeof it.text === "string" ? it.text : it.text?.ua || it.text?.uk || "",
   }));
 
-  // --- GIFT STORY DATA ---
   const giftDoc = await getGiftDoc();
   const giftLabel = typeof giftDoc?.label === "string" ? giftDoc.label : giftDoc?.label?.ua || giftDoc?.label?.uk || "ІСТОРІЇ";
   const giftHeading = typeof giftDoc?.heading === "string" ? giftDoc.heading : giftDoc?.heading?.ua || giftDoc?.heading?.uk || (typeof giftDoc?.title === "string" ? giftDoc.title : giftDoc?.title?.ua || giftDoc?.title?.uk || "Подарункова історія");
@@ -218,7 +212,6 @@ export default async function HomePage() {
     text: typeof (it as any).text === "string" ? (it as any).text : ((it as any).text?.ua as string) || "",
   }));
 
-  // --- ABOUT DATA ---
   const aboutDoc = await getAboutDoc();
   const aboutLabel = typeof aboutDoc?.label === "string" ? aboutDoc.label : aboutDoc?.label?.ua;
   const aboutHeading = typeof aboutDoc?.heading === "string" ? aboutDoc.heading : aboutDoc?.heading?.ua;
@@ -241,16 +234,9 @@ export default async function HomePage() {
 
   return (
     <main className="bg-[#FAFAF9] overflow-x-hidden">
-      
-      {/* 1. HERO SECTION */}
-      {/* Оставляем на всю ширину и высоту */}
       <HeroFade images={heroImages} title={heroTitle} subtitle={heroSubtitle} cta={heroCTA} />
 
-
-      {/* 2. GIFT STORY SECTION */}
-      {/* Делаем чистую белую секцию с легкой атмосферой */}
       <section className="relative py-20 lg:py-28 bg-white overflow-hidden">
-        {/* Декоративный блур (как на странице товара) */}
         <div className="absolute top-0 left-[-10%] w-[40vw] h-[40vw] bg-amber-100/30 blur-[120px] rounded-full pointer-events-none" />
         
         <div className="container relative z-10">
@@ -263,11 +249,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-
-      {/* 3. ABOUT WORKSHOP SECTION */}
-      {/* Секция с теплым оттенком (Stone-50) */}
       <section className="relative py-20 lg:py-28 bg-stone-50 border-t border-stone-100">
-         {/* Декоративный блур справа */}
          <div className="absolute bottom-0 right-[-5%] w-[35vw] h-[35vw] bg-emerald-100/20 blur-[100px] rounded-full pointer-events-none" />
 
          <AboutWorkshop
@@ -279,9 +261,6 @@ export default async function HomePage() {
          />
       </section>
 
-
-      {/* 4. FEATURES SECTION */}
-      {/* Промежуточная секция, чистая */}
       <section className="py-16 lg:py-24 bg-white border-y border-stone-100">
         <div className="container">
            <Features 
@@ -292,9 +271,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-
-      {/* 5. FEATURED PRODUCTS SECTION */}
-      {/* Финальная секция с товарами */}
       <section className="relative py-20 lg:py-28 bg-gradient-to-b from-stone-50 to-white">
         <div className="container">
           <FeaturedProducts

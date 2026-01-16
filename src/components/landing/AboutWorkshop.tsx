@@ -36,7 +36,7 @@ export default function AboutWorkshop({
           "Ми створюємо соломʼяні «павуки» та декор вручну, поєднуючи традицію з мінімалістичним дизайном.",
           "Кожен виріб — це ретельний добір матеріалів, пропорцій та форм, аби наповнити простір теплом і затишком.",
         ]
-    ).slice(0, 3); // Оставляем только 3 абзаца, чтобы не перегружать
+    ).slice(0, 3);
 
   const looksLikeVideo = (src?: string, kind?: "image" | "video") => {
     if (kind === "video") return true;
@@ -60,7 +60,6 @@ export default function AboutWorkshop({
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
         
-        {/* 1. ФОТО / ВИДЕО */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -90,15 +89,12 @@ export default function AboutWorkshop({
               )
             )}
             
-            {/* Декоративная рамка (опционально) */}
             <div className="absolute inset-0 rounded-[2rem] border border-black/5 pointer-events-none" />
           </div>
           
-          {/* Декоративный элемент сзади */}
           <div className="absolute -bottom-6 -left-6 -z-10 h-full w-full rounded-[2.5rem] bg-stone-100" />
         </motion.div>
 
-        {/* 2. ТЕКСТ */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}

@@ -32,9 +32,7 @@ export default function CatalogControls({ facets }: { facets: Facets }) {
 
   return (
     <>
-      {/* просто содержимое внутри большого блока */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        {/* Слева: иконка + текст + select */}
         <div className="flex flex-wrap items-center gap-3 min-w-0">
           <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 shadow-inner">
             <ArrowDownWideNarrow className="h-4 w-4" />
@@ -66,7 +64,6 @@ export default function CatalogControls({ facets }: { facets: Facets }) {
           </div>
         </div>
 
-        {/* Справа: кнопка Фільтри на мобилке */}
         <button
           onClick={() => setOpen((v) => !v)}
           className={[
@@ -81,7 +78,6 @@ export default function CatalogControls({ facets }: { facets: Facets }) {
         </button>
       </div>
 
-      {/* Мобильные фильтры */}
       {open && (
         <div className="lg:hidden mt-3 w-full animate-[fadeIn_0.25s_ease-out]">
           <CatalogFilters facets={facets} variant="mobile" />

@@ -27,8 +27,6 @@ export type FullProduct = {
   updatedAt: string;
   showDetailsBlocks?: boolean;
   availability?: "in_stock" | "on_order" | "out_of_stock";
-  
-  // 👇 1. ДОБАВИЛ НОВЫЕ ПОЛЯ В ТИП
   details_ua?: string;
   delivery_ua?: string;
 };
@@ -72,8 +70,6 @@ function serializeFullProduct(doc: any): FullProduct {
     updatedAt: new Date(doc.updatedAt).toISOString(),
     showDetailsBlocks: Boolean(doc.showDetailsBlocks),
     availability: doc.availability || "in_stock",
-
-    // 👇 2. ДОБАВИЛ ПЕРЕНОС ДАННЫХ ИЗ БАЗЫ В ОБЪЕКТ
     details_ua: doc.details_ua || "", 
     delivery_ua: doc.delivery_ua || "",
   };
@@ -107,7 +103,6 @@ export async function getProductBySlug(slug: string): Promise<FullProduct | null
         "desc_ua",
         "showDetailsBlocks",
         "availability",
-        // 👇 3. ДОБАВИЛ В ЗАПРОС К БАЗЕ
         "details_ua",
         "delivery_ua",
       ].join(" ")

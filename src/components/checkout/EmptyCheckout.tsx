@@ -10,7 +10,6 @@ export default function EmptyCheckout() {
   const [recommended, setRecommended] = useState<any[]>([]);
 
   useEffect(() => {
-    // Подтягиваем несколько товаров для блока рекомендаций
     fetch("/api/products")
       .then((r) => r.json())
       .then((data) => setRecommended((data?.products || []).slice(0, 4)))
@@ -67,7 +66,6 @@ export default function EmptyCheckout() {
           </div>
         </div>
 
-        {/* блок рекомендованных товаров */}
         {recommended.length > 0 && (
           <div className="mt-12">
             <h2 className="mb-5 text-lg sm:text-xl font-semibold text-zinc-900">

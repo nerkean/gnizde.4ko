@@ -17,7 +17,7 @@ export async function POST(req: Request) {
         calledMethod: "getWarehouses",
         methodProperties: {
           CityRef: cityRef,
-          FindByString: query || "", // Номер отделения или адрес
+          FindByString: query || "", 
           Limit: "50",
           Page: "1",
         },

@@ -3,10 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { readCartOnce } from "@/lib/cart-bridge";
-import NovaDeliveryFields from "@/components/NovaDeliveryFields"; // Убедись, что этот файл существует (код ниже)
+import NovaDeliveryFields from "@/components/NovaDeliveryFields"; 
 import UkrDeliveryFields from "@/components/UkrDeliveryFields";
 
-// --- Типы ---
 type CartItem = {
   id: string;
   title: string;
@@ -15,7 +14,6 @@ type CartItem = {
   image?: string;
 };
 
-// --- Хук (без изменений) ---
 function useCartBridge() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [ready, setReady] = useState(false);
@@ -100,7 +98,6 @@ function useCartBridge() {
   return { items, subtotal, shipping, total, reload: loadRaw };
 }
 
-// --- Компоненты UI ---
 function Field({
   label,
   value,
@@ -182,7 +179,6 @@ function DeliveryPill({
   );
 }
 
-// --- Основной компонент страницы ---
 export default function CheckoutPage() {
   const { items, subtotal, total } = useCartBridge();
 
@@ -272,14 +268,11 @@ export default function CheckoutPage() {
       </div>
 
       <form onSubmit={onSubmit} className="space-y-6">
-        {/* 👇 ИСПРАВЛЕНИЕ: УБРАН класс overflow-hidden */}
         <div className="rounded-[2.5rem] border border-amber-100 bg-white/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(0,0,0,0.04)] p-6 sm:p-10">
           <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr] items-start">
             
-            {/* ЛЕВАЯ КОЛОНКА — Форма */}
             <div className="space-y-10">
-              
-              {/* 1. Контактні дані */}
+
               <section>
                 <div className="flex items-center gap-3 mb-6">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-700 font-bold text-sm">1</div>
@@ -318,7 +311,6 @@ export default function CheckoutPage() {
                 </div>
               </section>
 
-              {/* 2. Доставка */}
               <section>
                 <div className="flex items-center gap-3 mb-6">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-700 font-bold text-sm">2</div>
@@ -396,7 +388,6 @@ export default function CheckoutPage() {
                 </div>
               </section>
 
-              {/* 3. Оплата */}
               <section>
                  <div className="flex items-center gap-3 mb-6">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-700 font-bold text-sm">3</div>
@@ -414,7 +405,6 @@ export default function CheckoutPage() {
               </section>
             </div>
 
-            {/* ПРАВАЯ КОЛОНКА — Итого */}
             <aside className="lg:sticky lg:top-24 space-y-6">
               <div className="bg-stone-50 rounded-3xl p-6 sm:p-8 border border-stone-200/60">
                 <h3 className="text-lg font-bold text-stone-900 mb-6">
@@ -429,7 +419,6 @@ export default function CheckoutPage() {
                       <li key={it.id} className="flex gap-3">
                         <div className="h-16 w-16 flex-shrink-0 rounded-xl bg-white border border-stone-100 overflow-hidden relative">
                           {it.image ? (
-                             // eslint-disable-next-line @next/next/no-img-element
                              <img src={it.image} alt={it.title} className="h-full w-full object-cover" />
                           ) : (
                              <div className="h-full w-full bg-stone-100 flex items-center justify-center text-[10px] text-stone-400">Фото</div>

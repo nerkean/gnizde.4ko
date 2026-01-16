@@ -7,7 +7,6 @@ import { getCartItems } from "@/lib/cart";
 export default function CheckoutGate({ children }: { children: React.ReactNode }) {
   const [tick, setTick] = useState(0);
 
-  // читаем корзину из localStorage
   const items = useMemo(() => {
     try {
       return getCartItems();
@@ -16,7 +15,6 @@ export default function CheckoutGate({ children }: { children: React.ReactNode }
     }
   }, [tick]);
 
-  // слушаем изменения кошика в других вкладках
   useEffect(() => {
     const onStorage = () => setTick((x) => x + 1);
     window.addEventListener("storage", onStorage);

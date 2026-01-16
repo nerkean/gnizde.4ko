@@ -1,4 +1,3 @@
-// app/search/page.tsx
 import { Search as SearchIcon, PackageSearch } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import { connectDB } from "@/lib/mongodb";
@@ -13,7 +12,6 @@ function escapeRegExp(s: string) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-// аккуратно распаковываем searchParams (как в CatalogPage)
 async function resolveSearchParams(p: Props["searchParams"]): Promise<SP> {
   const anyp: any = p;
   if (anyp && typeof anyp.then === "function") {
@@ -57,11 +55,9 @@ export default async function SearchPage(props: Props) {
 
   return (
     <section className="relative w-full bg-gradient-to-b from-amber-50/40 via-white to-amber-100/30">
-      {/* лёгкое свечение фона */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-amber-100/60 via-transparent to-transparent blur-2xl" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12">
-        {/* Хедер поиска */}
         <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-6 sm:mb-8">
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2 rounded-full border border-amber-100 bg-white/80 px-3 py-1 shadow-sm">
@@ -112,7 +108,6 @@ export default async function SearchPage(props: Props) {
           )}
         </header>
 
-        {/* Содержимое */}
         {!hasQuery && (
           <div className="mt-4 rounded-3xl border border-dashed border-amber-200 bg-white/70 px-5 py-6 sm:px-7 sm:py-7 shadow-sm flex items-center gap-4">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-50 text-amber-700">

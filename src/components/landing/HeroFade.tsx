@@ -39,10 +39,7 @@ export default function HeroFade({
       className="relative h-[85vh] min-h-[600px] w-full overflow-hidden bg-stone-900"
       aria-label="Головний банер Gnizde.4ko"
     >
-      {/* 1. ФОН (Медиа) */}
       <div className="absolute inset-0 select-none">
-        {/* LCP Image */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={posterSrc}
           alt={posterAlt}
@@ -52,7 +49,6 @@ export default function HeroFade({
           fetchPriority="high"
         />
 
-        {/* Video */}
         {isVideo && showVideo && (
           <video
             className="absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-in opacity-0 animate-in fade-in"
@@ -65,17 +61,14 @@ export default function HeroFade({
             onLoadedData={(e) => (e.currentTarget.style.opacity = "1")}
           />
         )}
-        
-        {/* ОВЕРЛЕЙ */}
+
         <div className="absolute inset-0 bg-gradient-to-t from-stone-900/80 via-stone-900/40 to-stone-900/30" />
         <div className="absolute inset-0 opacity-[0.03] bg-[url('/images/noise.png')] mix-blend-overlay pointer-events-none" />
       </div>
 
-      {/* 2. КОНТЕНТ */}
       <div className="relative z-10 flex h-full items-center justify-center px-4 sm:px-6">
         <div className="flex max-w-4xl flex-col items-center text-center">
           
-          {/* Бейдж */}
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 backdrop-blur-md">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75"></span>
@@ -86,19 +79,16 @@ export default function HeroFade({
             </span>
           </div>
 
-          {/* Заголовок */}
           <h1 className="mb-6 font-display text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-5xl md:text-7xl lg:text-[5rem] drop-shadow-sm">
             {title}
           </h1>
 
-          {/* Подзаголовок */}
           {subtitle && (
             <p className="mb-10 max-w-2xl text-lg font-light leading-relaxed text-stone-200 sm:text-xl md:text-2xl">
               {subtitle}
             </p>
           )}
 
-          {/* Кнопка (осталась одна) */}
           {cta && (
             <div className="flex justify-center">
               <Link
@@ -111,7 +101,6 @@ export default function HeroFade({
             </div>
           )}
           
-          {/* Скролл-индикатор */}
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-white/50">
              <div className="h-10 w-6 rounded-full border-2 border-white/30 flex justify-center pt-2">
                 <div className="h-1.5 w-1 bg-white/50 rounded-full animate-scroll" />

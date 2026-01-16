@@ -11,10 +11,8 @@ export default async function AdminLoginPage({
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[#FAFAF9] p-4">
       
-      {/* Контейнер карточки */}
       <div className="w-full max-w-[420px]">
         
-        {/* Логотип / Заголовок */}
         <div className="text-center mb-8">
            <div className="mx-auto h-12 w-12 bg-stone-900 text-white rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-stone-900/20">
              <ShieldCheck size={24} />
@@ -24,10 +22,8 @@ export default async function AdminLoginPage({
            </h1>
         </div>
 
-        {/* Форма */}
         <div className="bg-white rounded-[2.5rem] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.05)] border border-stone-100 p-8 sm:p-10">
-          
-          {/* Сообщения (Alerts) */}
+
           {loggedOut && (
             <div className="mb-6 flex items-center gap-3 rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800 border border-emerald-100">
               <CheckCircle size={18} className="text-emerald-600" />
@@ -45,7 +41,6 @@ export default async function AdminLoginPage({
           <form method="POST" action="/api/admin/login" className="space-y-5">
             <input type="hidden" name="next" value={next} />
             
-            {/* Логин */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-stone-500 ml-1">
                 Логін
@@ -63,7 +58,6 @@ export default async function AdminLoginPage({
               </div>
             </div>
 
-            {/* Пароль */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-stone-500 ml-1">
                 Пароль
@@ -82,7 +76,6 @@ export default async function AdminLoginPage({
               </div>
             </div>
 
-            {/* Кнопка */}
             <button className="w-full mt-2 rounded-xl bg-stone-900 py-3.5 text-sm font-bold text-white shadow-lg shadow-stone-900/10 hover:bg-stone-800 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all">
               Увійти
             </button>

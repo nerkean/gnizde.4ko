@@ -20,7 +20,6 @@ type Product = {
   category?: string;
   active: boolean;
   createdAt: string;
-  // Добавляем поля для картинки (API их обычно возвращает)
   images?: string[]; 
   imageUrl?: string;
 };
@@ -31,7 +30,6 @@ export default function AdminProductsPage() {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
 
-  // Загрузка данных
   useEffect(() => {
     fetch("/api/admin/products?limit=100", { credentials: "include" })
       .then((r) => r.json())
@@ -43,11 +41,9 @@ export default function AdminProductsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Удаление товара
   async function deleteProduct(id: string) {
     if (!confirm("Ви впевнені, що хочете видалити цей товар? Цю дію неможливо скасувати.")) return;
-    
-    // Оптимистичное обновление (сразу убираем из UI)
+
     const oldProducts = [...products];
     setProducts((prev) => prev.filter((p) => p._id !== id));
 
@@ -60,11 +56,10 @@ export default function AdminProductsPage() {
       if (!data.ok) throw new Error(data.error);
     } catch (e) {
       alert("❌ Помилка видалення");
-      setProducts(oldProducts); // Вернуть как было
+      setProducts(oldProducts); 
     }
   }
 
-  // Фильтрация поиска
   const filteredProducts = useMemo(() => {
     if (!search) return products;
     const lower = search.toLowerCase();
@@ -75,7 +70,6 @@ export default function AdminProductsPage() {
     );
   }, [products, search]);
 
-  // Получение картинки для превью
   const getThumb = (p: Product) => {
     if (p.imageUrl) return p.imageUrl;
     if (p.images && p.images.length > 0) return p.images[0];
@@ -98,8 +92,7 @@ export default function AdminProductsPage() {
 
   return (
     <div className="space-y-8 p-6 sm:p-10 max-w-7xl mx-auto">
-      
-      {/* Хедер страницы */}
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-display font-bold text-stone-900">
@@ -118,7 +111,6 @@ export default function AdminProductsPage() {
         </Link>
       </div>
 
-      {/* Панель поиска */}
       <div className="relative">
         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400">
           <Search size={20} />
@@ -131,7 +123,6 @@ export default function AdminProductsPage() {
         />
       </div>
 
-      {/* Таблица */}
       <div className="overflow-hidden rounded-[2rem] border border-stone-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
@@ -147,8 +138,7 @@ export default function AdminProductsPage() {
             <tbody className="divide-y divide-stone-100">
               {filteredProducts.map((p) => (
                 <tr key={p._id} className="group hover:bg-stone-50/80 transition-colors">
-                  
-                  {/* Название + Фото */}
+
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
                       <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg border border-stone-100 bg-stone-50">
@@ -166,12 +156,10 @@ export default function AdminProductsPage() {
                     </div>
                   </td>
 
-                  {/* Цена */}
                   <td className="px-6 py-4 font-mono font-medium text-stone-700">
                     {p.priceUAH.toLocaleString()} ₴
                   </td>
 
-                  {/* Статус */}
                   <td className="px-6 py-4">
                     <span
                       className={`inline-flex items-center rounded-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border ${
@@ -184,12 +172,10 @@ export default function AdminProductsPage() {
                     </span>
                   </td>
 
-                  {/* Дата */}
                   <td className="px-6 py-4 text-stone-500">
                     {new Date(p.createdAt).toLocaleDateString("uk-UA")}
                   </td>
 
-                  {/* Действия */}
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
                       <Link
@@ -214,7 +200,6 @@ export default function AdminProductsPage() {
           </table>
         </div>
 
-        {/* Пустое состояние */}
         {filteredProducts.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-stone-400">
             <div className="mb-4 rounded-full bg-stone-50 p-6">

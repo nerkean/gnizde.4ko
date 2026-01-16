@@ -13,8 +13,7 @@ export async function POST(req: NextRequest) {
 
     await connectDB();
     
-    // 👇 Добавил 'slug' в выборку
-    const docs = await Product.find({ _id: { $in: ids } }) // Убрал active: true, чтобы показывать даже скрытые товары в корзине (опционально)
+    const docs = await Product.find({ _id: { $in: ids } })
       .select("title_ua priceUAH images slug")
       .lean();
 
@@ -28,7 +27,7 @@ export async function POST(req: NextRequest) {
           Array.isArray(d.images) && d.images.length
             ? String(d.images[0])
             : undefined,
-        slug: d.slug, // 👇 Возвращаем slug
+        slug: d.slug,
       });
     }
 

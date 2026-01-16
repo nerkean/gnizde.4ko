@@ -20,14 +20,12 @@ export default function NovaDeliveryFields({
   errorCity,
   errorBranch,
 }: Props) {
-  // --- Состояние городов ---
   const [cityQuery, setCityQuery] = useState(city);
-  const [cityRef, setCityRef] = useState(""); // Ref выбранного города
+  const [cityRef, setCityRef] = useState("");
   const [cities, setCities] = useState<any[]>([]);
   const [loadingCities, setLoadingCities] = useState(false);
   const [showCityList, setShowCityList] = useState(false);
 
-  // --- Состояние отделений ---
   const [branchQuery, setBranchQuery] = useState(branch);
   const [branches, setBranches] = useState<any[]>([]);
   const [loadingBranches, setLoadingBranches] = useState(false);
@@ -36,9 +34,8 @@ export default function NovaDeliveryFields({
   const cityInputRef = useRef<HTMLInputElement>(null);
   const branchInputRef = useRef<HTMLInputElement>(null);
 
-  // 1. Поиск городов (Debounce)
   useEffect(() => {
-    if (!cityQuery || cityQuery === city) return; // Если не меняли или уже выбрано
+    if (!cityQuery || cityQuery === city) return; 
     
     const t = setTimeout(async () => {
       setLoadingCities(true);
@@ -63,7 +60,6 @@ export default function NovaDeliveryFields({
     return () => clearTimeout(t);
   }, [cityQuery, city]);
 
-  // 2. Поиск отделений (Debounce)
   useEffect(() => {
     if (!cityRef) {
         setBranches([]); 
@@ -71,7 +67,6 @@ export default function NovaDeliveryFields({
     }
     
     setLoadingBranches(true);
-    // Загружаем отделения сразу при выборе города
     fetch("/api/nova/warehouses", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -85,9 +80,7 @@ export default function NovaDeliveryFields({
       })
       .finally(() => setLoadingBranches(false));
 
-  }, [cityRef, branchQuery]); // Перезагружаем при смене города или поиске отделения
-
-  // Обработчик клика вне списков (закрытие)
+  }, [cityRef, branchQuery]); 
   useEffect(() => {
     const fn = (e: MouseEvent) => {
       if (cityInputRef.current && !cityInputRef.current.contains(e.target as Node)) {
@@ -104,7 +97,6 @@ export default function NovaDeliveryFields({
   return (
     <div className="space-y-4">
       
-      {/* --- ПОЛЕ ГОРОДА --- */}
       <div className="relative" ref={cityInputRef}>
         <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-stone-500 pl-1">
           Місто (Нова Пошта)
@@ -135,7 +127,6 @@ export default function NovaDeliveryFields({
         </div>
         {errorCity && <p className="mt-1.5 text-xs font-medium text-red-600 pl-1">{errorCity}</p>}
 
-        {/* Выпадающий список городов */}
         {showCityList && cities.length > 0 && (
           <div className="absolute left-0 right-0 top-[110%] z-20 max-h-60 overflow-auto rounded-xl border border-stone-200 bg-white shadow-xl">
             {cities.map((c: any) => (
@@ -143,12 +134,11 @@ export default function NovaDeliveryFields({
                 key={c.Ref}
                 type="button"
                 onClick={() => {
-                  const name = c.Description; // Или DescriptionRu
+                  const name = c.Description;
                   setCity(name);
                   setCityQuery(name);
                   setCityRef(c.Ref);
                   setShowCityList(false);
-                  // Сброс отделения
                   setBranch("");
                   setBranchQuery("");
                 }}
@@ -161,7 +151,6 @@ export default function NovaDeliveryFields({
         )}
       </div>
 
-      {/* --- ПОЛЕ ОТДЕЛЕНИЯ --- */}
       <div className="relative" ref={branchInputRef}>
         <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-stone-500 pl-1">
           Відділення / Поштомат
@@ -186,7 +175,6 @@ export default function NovaDeliveryFields({
         </div>
         {errorBranch && <p className="mt-1.5 text-xs font-medium text-red-600 pl-1">{errorBranch}</p>}
 
-        {/* Выпадающий список отделений */}
         {showBranchList && branches.length > 0 && (
           <div className="absolute left-0 right-0 top-[110%] z-20 max-h-60 overflow-auto rounded-xl border border-stone-200 bg-white shadow-xl">
             {branches

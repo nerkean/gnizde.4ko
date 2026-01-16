@@ -11,8 +11,6 @@ import {
 import { getContentBlock } from "@/lib/content-block";
 import Image from "next/image";
 
-// --- ИКОНКИ ---
-
 function TikTokIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
@@ -47,8 +45,6 @@ function SocialIcon({ kind }: { kind?: SocialItem["kind"] }) {
   }
 }
 
-// --- КОМПОНЕНТЫ ---
-
 export default async function Footer() {
   const footer = await getContentBlock("footer.main");
   const data: any = footer?.data || {};
@@ -77,10 +73,8 @@ export default async function Footer() {
     <footer className="bg-stone-50 border-t border-stone-200 text-stone-600 pt-16 pb-8">
       <div className="container px-4 md:px-6">
         
-        {/* Верхняя часть: Сетка 3 колонки */}
         <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr_1fr] mb-16">
           
-          {/* 1. Бренд и описание */}
           <div className="space-y-6">
             <Link href="/" className="inline-flex items-center gap-2 group">
               <div className="relative h-10 w-10 overflow-hidden rounded-full border border-amber-100 bg-white p-1.5 shadow-sm transition-transform group-hover:rotate-12">
@@ -96,7 +90,6 @@ export default async function Footer() {
               </p>
             </div>
 
-            {/* Соцсети */}
             <div className="flex gap-2">
               {socials.map((s, i) => (
                 <a
@@ -113,7 +106,6 @@ export default async function Footer() {
             </div>
           </div>
 
-          {/* 2. Навигация */}
           <div className="lg:pl-8">
             <h4 className="font-semibold text-stone-900 mb-5 text-sm uppercase tracking-wider">Каталог</h4>
             <ul className="space-y-3 text-sm">
@@ -129,7 +121,6 @@ export default async function Footer() {
             </ul>
           </div>
 
-          {/* 3. Контакты */}
           <div>
             <h4 className="font-semibold text-stone-900 mb-5 text-sm uppercase tracking-wider">Контакти</h4>
             <ul className="space-y-4 text-sm">
@@ -151,7 +142,6 @@ export default async function Footer() {
           </div>
         </div>
 
-        {/* Нижняя часть: Только копирайт */}
         <div className="border-t border-stone-200 pt-8 flex justify-center text-xs text-stone-400">
           <p>© {year} Gnizde.4ko. Всі права захищені.</p>
         </div>

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-// --- Типы ---
 type Product = {
   _id?: string;
   title_ua: string;
@@ -19,7 +18,6 @@ type Product = {
   delivery_ua?: string;
 };
 
-// --- Утилиты (Логика та же, скрыл для краткости, если нужно - верну) ---
 async function compressImage(file: File, maxWidth = 2000, quality = 0.85): Promise<File> {
   return new Promise((resolve) => {
     const img = new Image();
@@ -41,7 +39,6 @@ async function compressImage(file: File, maxWidth = 2000, quality = 0.85): Promi
   });
 }
 
-// --- Компонент Формы ---
 export default function ProductForm({
   product,
   isEdit = false,
@@ -72,12 +69,10 @@ export default function ProductForm({
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  // --- Хелперы ---
   function update<K extends keyof Product>(key: K, value: Product[K]) {
     setForm((f) => ({ ...f, [key]: value }));
   }
 
-  // --- Загрузка и управление фото (логика сохранена) ---
   async function onPickFile(e: React.ChangeEvent<HTMLInputElement>) {
     let file = e.target.files?.[0];
     if (!file) return;
@@ -139,7 +134,6 @@ export default function ProductForm({
   }
   const isVideoUrl = (url: string) => /\.(mp4|webm|ogg|mov)$/i.test(url);
 
-  // --- Сабмит ---
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
@@ -163,7 +157,6 @@ export default function ProductForm({
     }
   }
 
-  // --- UI Components Styles ---
   const cardClass = "bg-white p-6 rounded-3xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-stone-100";
   const labelClass = "block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2";
   const inputClass = "w-full rounded-xl border-stone-200 bg-stone-50 px-4 py-3 text-stone-900 transition-all focus:border-stone-400 focus:bg-white focus:ring-4 focus:ring-stone-100 outline-none";
@@ -278,11 +271,9 @@ export default function ProductForm({
                       {isVideo ? (
                         <video src={src} className="w-full h-full object-cover opacity-90" muted loop />
                       ) : (
-                        // eslint-disable-next-line @next/next/no-img-element
                         <img src={src} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                       )}
                       
-                      {/* Оверлей управления */}
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-[2px]">
                         <button
                           type="button"

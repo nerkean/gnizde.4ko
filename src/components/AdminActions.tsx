@@ -15,7 +15,6 @@ export default function AdminActions({
   const [pending, setPending] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // Функція надсилання запиту
   async function call(method: "PATCH" | "DELETE", body?: any) {
     if (pending) return;
     setPending(true);
@@ -37,16 +36,10 @@ export default function AdminActions({
         throw new Error(await res.text());
       }
 
-      // Успіх
       if (onUpdated) {
         onUpdated();
       } else {
-        // Якщо ми видалили замовлення, краще повернутися до списку (якщо ми на сторінці деталей)
-        // Або перезавантажити, якщо ми у списку. 
-        // Тут проста логіка:
         if (method === "DELETE") {
-             // Спробуємо визначити, де ми. Якщо у списку - reload. 
-             // Якщо на сторінці замовлення - редірект.
              if (window.location.pathname.includes("/orders/")) {
                  window.location.href = "/admin/orders";
              } else {
@@ -61,16 +54,13 @@ export default function AdminActions({
       alert("Помилка: " + e.message);
     } finally {
       setPending(false);
-      setShowDeleteModal(false); // Закриваємо модалку при будь-якому результаті
+      setShowDeleteModal(false); 
     }
   }
 
-  // Обробник зміни статусу
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value;
     if (newStatus && newStatus !== current) {
-      // Для скасування можна залишити native confirm, або теж зробити модалку.
-      // Поки що залишимо confirm для швидкості, бо модалка у нас для видалення.
       if (newStatus === "canceled" && !confirm("Скасувати це замовлення?")) {
         e.target.value = current; 
         return;
@@ -117,7 +107,6 @@ export default function AdminActions({
           </div>
         </div>
 
-        {/* Кнопка Видалити (відкриває модалку) */}
         <button
           disabled={pending}
           title="Видалити замовлення"

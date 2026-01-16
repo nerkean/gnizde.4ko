@@ -21,7 +21,6 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
 
   const update: any = {};
 
-  // 🔹 Простая нормализация полей
   if (body.title_ua != null) update.title_ua = String(body.title_ua).trim();
   if (body.priceUAH != null) update.priceUAH = Number(body.priceUAH);
   if (body.category != null) update.category = String(body.category).trim();
@@ -33,7 +32,6 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
     update.showDetailsBlocks = Boolean(body.showDetailsBlocks);
   }
   
-  // 👇 ДОБАВИЛ ОБНОВЛЕНИЕ ТЕКСТА
   if (body.details_ua != null) update.details_ua = String(body.details_ua);
   if (body.delivery_ua != null) update.delivery_ua = String(body.delivery_ua);
 
@@ -44,12 +42,10 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
     }
   }
 
-  // 🔹 Массив изображений
   if ("images" in body) {
     update.images = Array.isArray(body.images) ? body.images.map(String) : [];
   }
 
-  // 🔹 Автогенерация / обновление slug
   if ("slug" in body || "title_ua" in update) {
     const newSlug = String(body.slug || "").trim() || toSlug(update.title_ua || "");
     if (!newSlug) {
@@ -64,7 +60,6 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
     update.slug = newSlug;
   }
 
-  // 🔹 Валидация цены
   if (
     update.priceUAH != null &&
     (!Number.isFinite(update.priceUAH) || update.priceUAH < 0)

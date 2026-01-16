@@ -28,10 +28,8 @@ export default function FeaturedProducts({
   return (
     <div className="relative w-full">
       
-      {/* Декоративный фон (очень легкий) */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.03),transparent_70%)] pointer-events-none" />
 
-      {/* Заголовок */}
       <div className="relative mx-auto mb-12 max-w-2xl text-center sm:mb-16 z-10">
         <span className="mb-3 inline-block text-xs font-bold uppercase tracking-[0.2em] text-amber-700">
           Каталог
@@ -46,7 +44,6 @@ export default function FeaturedProducts({
         )}
       </div>
 
-      {/* Сетка товаров */}
       <motion.div
         initial="hidden"
         whileInView="show"
@@ -74,7 +71,6 @@ export default function FeaturedProducts({
         ))}
       </motion.div>
 
-      {/* Кнопка "Больше" */}
       {moreLink && (
         <div className="relative z-10 mt-16 flex justify-center">
           <Link

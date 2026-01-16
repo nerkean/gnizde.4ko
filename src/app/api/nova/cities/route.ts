@@ -9,7 +9,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "No API Key" }, { status: 500 });
     }
 
-    // Если запрос пустой, не ищем
     if (!query || query.length < 2) {
       return NextResponse.json({ success: true, data: [] });
     }
@@ -31,11 +30,9 @@ export async function POST(req: Request) {
     const data = await res.json();
 
     if (data.success && data.data && data.data.length > 0) {
-      // Новая почта возвращает сложную структуру в searchSettlements
-      // Нам нужно вытащить Addresses
       const items = data.data[0].Addresses.map((item: any) => ({
-        Description: item.Present, // Полное название (напр. "м. Київ, Київська обл.")
-        Ref: item.DeliveryCity,    // Ref города для поиска отделений
+        Description: item.Present,
+        Ref: item.DeliveryCity,
       }));
 
       return NextResponse.json({ success: true, data: items });

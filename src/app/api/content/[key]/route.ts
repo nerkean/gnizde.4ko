@@ -6,19 +6,16 @@ export const dynamic = "force-dynamic";
 
 type Ctx = { params: Promise<{ key: string }> };
 
-// ---------------- ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ALT ----------------
 
 function autoFillAlt(key: string, rawData: any) {
   const data = rawData || {};
   const k = key || "";
 
-  // небольшая функция, чтобы не падать, если чего-то нет
   const clone = <T,>(v: T): T =>
     v && typeof v === "object" ? JSON.parse(JSON.stringify(v)) : v;
 
   const next: any = clone(data);
 
-  // Базовый ALT для images по ключу блока
   const baseImageAlt = (() => {
     if (k === "home.hero") return "Головне зображення першого екрану";
     if (k === "home.features") return "Зображення блоку «Особливості»";
@@ -29,7 +26,6 @@ function autoFillAlt(key: string, rawData: any) {
     return "Зображення сайту";
   })();
 
-  // ----- 1) data.images: hero / about / любые блоки с images -----
   if (Array.isArray(next.images)) {
     next.images = next.images.map((img: any, index: number) => {
       const titleUa =
@@ -49,7 +45,6 @@ function autoFillAlt(key: string, rawData: any) {
     });
   }
 
-  // ----- 2) data.stories: для Подарункова історія (gallery) -----
   if (Array.isArray(next.stories)) {
     next.stories = next.stories.map((story: any, index: number) => {
       const titleUa = story?.title?.ua?.trim();
@@ -64,7 +59,6 @@ function autoFillAlt(key: string, rawData: any) {
     });
   }
 
-  // ----- 3) data.categories: для Категорії каталогу -----
   if (Array.isArray(next.categories)) {
     next.categories = next.categories.map((cat: any) => {
       const titleUa = cat?.title?.ua || "";
@@ -77,7 +71,7 @@ function autoFillAlt(key: string, rawData: any) {
           : "Категорія каталогу";
 
       if (!cat.image) {
-        return cat; // если картинки нет — пропускаем
+        return cat; 
       }
 
       const image = cat.image;
@@ -94,7 +88,6 @@ function autoFillAlt(key: string, rawData: any) {
   return next;
 }
 
-// ---------------- GET ----------------
 export async function GET(_req: Request, ctx: Ctx) {
   try {
     await connectDB();
@@ -113,7 +106,6 @@ export async function GET(_req: Request, ctx: Ctx) {
   }
 }
 
-// ---------------- POST / PUT ----------------
 async function upsertBlock(req: Request, ctx: Ctx) {
   await connectDB();
   const { key } = await ctx.params;
@@ -128,7 +120,6 @@ async function upsertBlock(req: Request, ctx: Ctx) {
     );
   }
 
-  // 🪄 тут накручиваем ALT, если его нет
   const dataWithAlt = autoFillAlt(key, body?.data ?? {});
 
   const update = {

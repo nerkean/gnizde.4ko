@@ -13,12 +13,10 @@ export type ProductDoc = {
   createdAt: Date;
   updatedAt: Date;
   imageUrl?: string;
-
-  // 👇 ТИПИЗАЦИЯ НОВЫХ ПОЛЕЙ (Ты забыл их здесь)
   showDetailsBlocks?: boolean; 
   availability?: "in_stock" | "on_order" | "out_of_stock"; 
-  details_ua?: string;  // <--- Добавил
-  delivery_ua?: string; // <--- Добавил
+  details_ua?: string; 
+  delivery_ua?: string; 
 };
 
 const ProductSchema = new Schema<ProductDoc>(
@@ -31,20 +29,16 @@ const ProductSchema = new Schema<ProductDoc>(
     desc_ua:  { type: String, default: "" },
     stock:    { type: Number, default: 0 },
     active:   { type: Boolean, default: true },
-
     showDetailsBlocks: {   
       type: Boolean,
       default: false,
     },
-
     availability: {  
       type: String,
       enum: ["in_stock", "on_order", "out_of_stock"],
       default: "in_stock",
     },
-    
-    // В схеме у тебя все было верно:
-    details_ua: { type: String, default: "" }, // Лучше добавить default: "", чтобы в React не было ошибок с null
+    details_ua: { type: String, default: "" },
     delivery_ua: { type: String, default: "" }, 
   },
   {

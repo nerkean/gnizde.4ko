@@ -9,14 +9,11 @@ export async function sendTelegramOrder(order: any) {
     return;
   }
 
-  // 1. Получаем ID из .env (резервный)
   const envChatId = process.env.TELEGRAM_CHAT_ID;
 
-  // 2. Получаем список ID из базы данных (настройки админки)
   let dbChatIds: string[] = [];
   try {
     await connectDB();
-    // 👇 ГЛАВНОЕ ИСПРАВЛЕНИЕ: "as any" убирает ошибку TypeScript
     const settings = await ContentBlock.findOne({ key: "admin.settings" }).lean() as any;
     
     if (settings && settings.data && Array.isArray(settings.data.telegramChatIds)) {
@@ -26,11 +23,9 @@ export async function sendTelegramOrder(order: any) {
     console.error("⚠️ Error reading telegram settings from DB:", e);
   }
 
-  // 3. Объединяем все ID и убираем дубликаты
   const uniqueIds = new Set<string>();
   
   if (envChatId) {
-    // Если в .env несколько ID через запятую
     envChatId.split(",").forEach(id => uniqueIds.add(id.trim()));
   }
   
@@ -43,7 +38,6 @@ export async function sendTelegramOrder(order: any) {
     return;
   }
 
-  // 4. Формируем красивый текст сообщения
   const itemsList = order.items
     .map(
       (i: any, index: number) =>
@@ -76,7 +70,6 @@ ${itemsList}
 ${order.comment ? `📝 <b>Коментар:</b>\n${order.comment}` : ""}
 `;
 
-  // 5. Отправляем каждому получателю
   const url = `https://api.telegram.org/bot${token}/sendMessage`;
 
   console.log(`🚀 Sending Telegram order notification to ${targets.length} recipients...`);

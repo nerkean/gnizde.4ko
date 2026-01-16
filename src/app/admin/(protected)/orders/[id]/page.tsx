@@ -16,8 +16,6 @@ import {
   Package
 } from "lucide-react";
 
-// --- Хелпери ---
-
 function fmtDate(d: string | Date) {
   return new Date(d).toLocaleString("uk-UA", {
     day: "numeric",
@@ -59,7 +57,6 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-// Типізація даних замовлення
 type OrderLean = {
   _id: string;
   orderId: string;
@@ -86,7 +83,6 @@ type OrderLean = {
     priceUAH: number;
     qty: number;
   }[];
-  // Сирі дані (якщо є)
   paymentData?: any;
   fondyData?: any;
   liqpayData?: any;
@@ -103,7 +99,6 @@ export default async function OrderPage({
   const o = await Order.findById(id).lean<OrderLean>();
   if (!o) return notFound();
 
-  // Збираємо сирі дані для дебагу
   const rawPayment =
     o.paymentData !== undefined
       ? o.paymentData
@@ -115,8 +110,7 @@ export default async function OrderPage({
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-20">
-      
-      {/* --- Верхня панель --- */}
+
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-3">
@@ -137,7 +131,6 @@ export default async function OrderPage({
           </div>
         </div>
 
-        {/* Панель дій */}
         <div className="bg-white p-2 rounded-xl border border-stone-200 shadow-sm flex items-center gap-2">
             <span className="text-xs font-semibold text-stone-500 uppercase tracking-wider px-2">Дії:</span>
             <AdminActions orderId={String(o._id)} current={o.status} />
@@ -145,11 +138,8 @@ export default async function OrderPage({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* --- ЛІВА КОЛОНКА (Основна) --- */}
         <div className="lg:col-span-2 space-y-6">
-          
-          {/* Блок товарів */}
+
           <section className="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
             <div className="px-6 py-4 border-b border-stone-100 flex items-center gap-2">
               <Package className="w-5 h-5 text-amber-600" />
@@ -177,7 +167,6 @@ export default async function OrderPage({
               )}
             </div>
             
-            {/* Підсумок */}
             <div className="bg-stone-50 px-6 py-4 border-t border-stone-200 flex justify-between items-center">
               <span className="text-stone-600 font-medium">Загальна сума</span>
               <span className="text-2xl font-bold text-stone-900">
@@ -186,7 +175,6 @@ export default async function OrderPage({
             </div>
           </section>
 
-          {/* Коментар клієнта */}
           {o.customer?.comment && (
             <section className="bg-amber-50 rounded-2xl border border-amber-100 p-5">
               <div className="flex gap-3">
@@ -199,7 +187,6 @@ export default async function OrderPage({
             </section>
           )}
 
-           {/* Технічна інфо (Raw Data) */}
            {rawPayment && (
             <details className="group bg-white rounded-2xl border border-stone-200 overflow-hidden">
               <summary className="flex items-center gap-2 px-6 py-3 cursor-pointer hover:bg-stone-50 font-medium text-stone-500 text-sm select-none">
@@ -217,10 +204,8 @@ export default async function OrderPage({
 
         </div>
 
-        {/* --- ПРАВА КОЛОНКА (Інфо) --- */}
         <div className="space-y-6">
-          
-          {/* Картка клієнта */}
+
           <section className="bg-white rounded-2xl shadow-sm border border-stone-200 p-5">
             <h2 className="text-sm font-bold text-stone-400 uppercase tracking-wider mb-4 flex items-center gap-2">
               <User className="w-4 h-4" />
@@ -253,7 +238,6 @@ export default async function OrderPage({
             </div>
           </section>
 
-          {/* Картка доставки */}
           <section className="bg-white rounded-2xl shadow-sm border border-stone-200 p-5">
             <h2 className="text-sm font-bold text-stone-400 uppercase tracking-wider mb-4 flex items-center gap-2">
               <Truck className="w-4 h-4" />

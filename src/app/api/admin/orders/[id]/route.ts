@@ -3,7 +3,7 @@ import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/Order";
 
 export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
-  const { id } = await context.params; // 👈 распаковываем Promise
+  const { id } = await context.params; 
   const body = await req.json().catch(() => ({}));
   const status = body.status as string;
 
@@ -15,7 +15,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
 }
 
 export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> }) {
-  const { id } = await context.params; // 👈 тоже распаковываем
+  const { id } = await context.params; 
   await connectDB();
   await Order.findByIdAndDelete(id);
   return NextResponse.json({ ok: true });

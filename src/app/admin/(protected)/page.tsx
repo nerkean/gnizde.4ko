@@ -42,7 +42,6 @@ export default async function AdminHome({
 
   return (
     <div className="space-y-6">
-      {/* Фильтры */}
       <form className="flex flex-wrap items-end gap-3">
         <div className="flex flex-col">
           <label className="text-xs text-stone-500">Пошук</label>
@@ -74,7 +73,6 @@ export default async function AdminHome({
         <a href="/admin" className="rounded-xl border border-stone-300 px-4 py-2 hover:bg-stone-50">Скинути</a>
       </form>
 
-      {/* Таблица */}
       <div className="overflow-x-auto rounded-2xl border border-stone-200 bg-white">
         <table className="min-w-full text-sm">
           <thead className="bg-stone-50 text-left text-stone-600">
@@ -114,7 +112,6 @@ export default async function AdminHome({
         </table>
       </div>
 
-      {/* Пагинация */}
       <div className="flex flex-wrap items-center gap-2">
         {Array.from({ length: pages }).map((_, i) => {
           const p = i + 1;

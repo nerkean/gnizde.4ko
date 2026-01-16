@@ -27,11 +27,9 @@ export default function Header() {
         border-b border-amber-100/70
       "
     >
-      {/* Верхняя линия-свечение */}
       <div className="h-[2px] w-full bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-300" />
 
       <div className="container flex items-center justify-between py-4 sm:py-5">
-        {/* 🪶 ЛОГО */}
         <Link
           href="/"
           className="flex items-center gap-2 text-[17px] font-bold text-stone-900 group"
@@ -51,7 +49,6 @@ export default function Header() {
           </span>
         </Link>
 
-        {/* 🌐 ДЕСКТОП-НАВ */}
         <nav className="hidden lg:flex items-center gap-1.5 rounded-2xl border border-amber-100/60 bg-white/70 px-2 py-1 shadow-sm backdrop-blur-sm">
           {NAV.map((item) => {
             const active =
@@ -87,16 +84,13 @@ export default function Header() {
           })}
         </nav>
 
-        {/* 🔍 Поиск + бургер */}
         <div className="flex items-center gap-3">
-          {/* Поиск только на DESKTOP (>= lg) */}
           <div className="hidden lg:block relative group">
             <div className="w-[220px] group-focus-within:w-[300px] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
               <SearchBox />
             </div>
           </div>
 
-          {/* Гамбургер — на всех ширинах < lg */}
           <button
             aria-label="Меню"
             onClick={() => setMenuOpen(true)}

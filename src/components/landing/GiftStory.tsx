@@ -3,11 +3,11 @@
 import Image from "next/image";
 
 type StoryItem = {
-  img?: string;        // URL картинки или відео
-  title?: string;      // Заголовок карточки
-  text?: string;       // Текст карточки
-  alt?: string;        // ALT (опціонально)
-  kind?: "image" | "video"; // тип медіа (опціонально)
+  img?: string;    
+  title?: string;   
+  text?: string;   
+  alt?: string;    
+  kind?: "image" | "video"; 
 };
 
 export default function GiftStory({
@@ -27,7 +27,6 @@ export default function GiftStory({
   const headingText = heading || "Подарункова історія";
   const descriptionText = description || "Затишок дому та традиції в кожній формі.";
 
-  // Детектор відео
   const isVideoItem = (item: StoryItem): boolean => {
     if (item.kind === "video") return true;
     if (item.kind === "image") return false;
@@ -37,8 +36,7 @@ export default function GiftStory({
 
   return (
     <section className="w-full">
-      
-      {/* Заголовок секции */}
+
       <div className="mx-auto max-w-2xl text-center mb-12 sm:mb-16">
         <span className="inline-block text-xs font-bold uppercase tracking-[0.2em] text-amber-700 mb-3">
           {labelText}
@@ -51,7 +49,6 @@ export default function GiftStory({
         </p>
       </div>
 
-      {/* Сетка историй */}
       <div className="grid gap-8 sm:grid-cols-2 lg:gap-12">
         {data.map((item, idx) => {
           const isVideo = isVideoItem(item);
@@ -62,7 +59,6 @@ export default function GiftStory({
               key={`${item.title ?? "story"}-${idx}`}
               className="group flex flex-col gap-6"
             >
-              {/* Медиа контейнер */}
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] bg-stone-100 shadow-sm transition-all duration-500 group-hover:shadow-md">
                 {!!item.img && (
                   isVideo ? (
@@ -84,12 +80,10 @@ export default function GiftStory({
                     />
                   )
                 )}
-                
-                {/* Легкая виньетка для глубины */}
+
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               </div>
 
-              {/* Текстовый контент */}
               <div className="px-2">
                 {item.title && (
                   <h3 className="mb-3 text-xl sm:text-2xl font-bold text-stone-900 group-hover:text-amber-700 transition-colors duration-300">

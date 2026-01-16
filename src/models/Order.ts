@@ -10,29 +10,23 @@ const OrderSchema = new Schema({
   }],
   total: Number,
   currency: { type: String, default: "UAH" },
-  
-  // 👇 1. Добавляем "new", "shipped", "canceled" в список разрешенных
   status: { 
     type: String, 
     enum: ["new", "pending", "paid", "shipped", "canceled", "failure", "error", "sandbox"], 
     default: "new" 
   },
-
   customer: {
     name: String,
     phone: String,
-    email: String, // 👇 2. Добавляем email, он приходил с формы
+    email: String,
     comment: String,
   },
-
-  // 👇 3. Добавляем блок доставки, иначе адрес не сохранится!
   delivery: {
-    type: { type: String }, // 'nova' | 'ukr' | 'courier'
+    type: { type: String }, 
     city: String,
     branch: String,
     address: String,
   },
-  
   liqpayData: Object, 
 }, { timestamps: true });
 

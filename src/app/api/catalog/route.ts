@@ -14,7 +14,6 @@ export async function GET(req: Request) {
   const minPrice  = Number(searchParams.get("minPrice") || "");
   const maxPrice  = Number(searchParams.get("maxPrice") || "");
 
-  // 🔹 НОВОЕ: поддерживаем и новый параметр availability, и старый inStock=true
   const rawAvailability = (searchParams.get("availability") || "").trim();
   const inStockFlag = searchParams.get("inStock") === "true";
 
@@ -23,43 +22,33 @@ export async function GET(req: Request) {
     ? (rawAvailability as (typeof allowedAvail)[number])
     : null;
 
-  const sortKey   = (searchParams.get("sort") || "popular").trim(); // popular | price_asc | price_desc | new
+  const sortKey   = (searchParams.get("sort") || "popular").trim(); 
 
   const filter: any = { active: true };
 
-  // поиск по названию
   if (q) {
     const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
     filter.$or = [{ title_ua: re }, { title_ru: re }, { title_en: re }];
   }
 
-  // категория
   if (category) filter.category = category;
 
-  // диапазон цены
   const priceCond: any = {};
   if (!Number.isNaN(minPrice)) priceCond.$gte = minPrice;
   if (!Number.isNaN(maxPrice) && maxPrice > 0) priceCond.$lte = maxPrice;
   if (Object.keys(priceCond).length) filter.priceUAH = priceCond;
 
-  // 🔹 НОВОЕ: фильтрация по availability
   if (availability) {
-    // если явно передали availability
     filter.availability = availability;
   } else if (inStockFlag) {
-    // бэкап: если старый параметр inStock=true — считаем, что нужны только in_stock
     filter.availability = "in_stock";
   }
-  // ❗ Старый фильтр по stock (>0) больше НЕ нужен,
-  //   вся логика теперь в поле availability
-  // if (inStock) filter.stock = { $gt: 0 };
 
-  // сортировка
   const sort: Record<string, 1 | -1> = {};
   if (sortKey === "price_asc") sort.priceUAH = 1;
   else if (sortKey === "price_desc") sort.priceUAH = -1;
   else if (sortKey === "new") sort.createdAt = -1;
-  else sort._id = -1; // условно «популярні»
+  else sort._id = -1;
 
   const total = await Product.countDocuments(filter);
 const products = await Product.find(filter)
@@ -69,8 +58,6 @@ const products = await Product.find(filter)
   .limit(limit)
   .lean();
 
-
-  // фасеты для сайдбара (категории + min/max цены)
   const [cats, minmax] = await Promise.all([
     Product.aggregate([
       { $match: { active: true } },

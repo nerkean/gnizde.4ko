@@ -17,11 +17,8 @@ export default async function EditProductPage({
     return notFound();
   }
 
-  // Сериализация (превращаем _id и даты в строки)
   const product = JSON.parse(JSON.stringify(productDoc));
 
-  // 🚑 МИГРАЦИЯ НА ЛЕТУ:
-  // Если у товара есть старое поле imageUrl, но нет images, переносим его
   if (!product.images || product.images.length === 0) {
     if (product.imageUrl) {
       product.images = [product.imageUrl];

@@ -1,4 +1,3 @@
-// src/lib/cart-bridge.ts
 export type RawCartItem =
   | { id?: string; productId?: string; title?: string; priceUAH?: number; qty?: number; quantity?: number; image?: string }
   | Record<string, any>;
@@ -16,7 +15,6 @@ function parseJSON<T>(v: string | null): T | null {
   try { return JSON.parse(v) as T; } catch { return null; }
 }
 
-// ✅ type guard: если вернуло true — arr точно RawCartItem[]
 function looksLikeCartArray(arr: unknown): arr is RawCartItem[] {
   if (!Array.isArray(arr) || arr.length === 0) return false;
   return (
@@ -50,17 +48,14 @@ function normalizeItems(raw: RawCartItem[]): CartItem[] {
     .filter(Boolean) as CartItem[];
 }
 
-/** Сканирует ВСЕ ключи localStorage и sessionStorage, выбирая самый правдоподобный массив корзины. */
 export function readCartOnce(): CartItem[] {
   if (typeof window === "undefined") return [];
 
-  // 1) window.__CART__
   const wc = (window as any).__CART__;
   if (looksLikeCartArray(wc)) {
     return normalizeItems(wc);
   }
 
-  // 2) localStorage — проходим по всем ключам
   const candidates: { key: string; data: RawCartItem[]; score: number }[] = [];
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i)!;
@@ -70,12 +65,11 @@ export function readCartOnce(): CartItem[] {
     }
   }
 
-  // 3) sessionStorage — тоже пробуем
   for (let i = 0; i < sessionStorage.length; i++) {
     const key = sessionStorage.key(i)!;
     const parsed = parseJSON<unknown>(sessionStorage.getItem(key));
     if (looksLikeCartArray(parsed)) {
-      candidates.push({ key, data: parsed, score: scoreKeyName(key) + parsed.length - 1 }); // чуть ниже приоритет
+      candidates.push({ key, data: parsed, score: scoreKeyName(key) + parsed.length - 1 });
     }
   }
 

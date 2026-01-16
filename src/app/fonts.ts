@@ -2,8 +2,8 @@
 import { Montserrat, Inter } from "next/font/google";
 
 export const display = Montserrat({
-  subsets: ["latin", "cyrillic"],     // ← кириллица обязательна
-  weight: ["700", "800"],             // если используешь font-extrabold — добавь 800
+  subsets: ["latin", "cyrillic"],
+  weight: ["700", "800"],
   variable: "--font-display",
   display: "swap",
 });

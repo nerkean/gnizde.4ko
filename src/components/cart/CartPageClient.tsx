@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Trash2, Minus, Plus, ArrowRight, Loader2, CheckCircle } from "lucide-react";
-import { useCart } from "@/lib/cartContext"; // 👈 Убедитесь, что этот путь правильный
+import { useCart } from "@/lib/cartContext"; 
 
 export default function CartPageClient() {
   const { items, updateQuantity, removeFromCart, clearCart, total } = useCart();
@@ -14,7 +14,7 @@ export default function CartPageClient() {
   const [form, setForm] = useState({
     name: "",
     phone: "",
-    messenger: "telegram", // или viber/whatsapp
+    messenger: "telegram", 
     delivery: "nova_poshta",
     city: "",
     warehouse: "",
@@ -30,7 +30,6 @@ export default function CartPageClient() {
     setLoading(true);
 
     try {
-      // Отправляем заказ на API (который отправит в Telegram)
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -45,7 +44,6 @@ export default function CartPageClient() {
 
       if (data.ok) {
         clearCart();
-        // Перенаправление на страницу "Спасибо"
         router.push("/thank-you"); 
       } else {
         alert("Сталася помилка при оформленні. Спробуйте ще раз.");
@@ -58,7 +56,6 @@ export default function CartPageClient() {
     }
   };
 
-  // --- Если корзина пуста ---
   if (items.length === 0) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
@@ -79,14 +76,12 @@ export default function CartPageClient() {
     );
   }
 
-  // --- Основной интерфейс ---
   return (
     <div className="container mx-auto px-4 py-8 lg:py-12 max-w-6xl">
       <h1 className="text-3xl font-bold text-stone-900 mb-8">Оформлення замовлення</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-        
-        {/* ЛЕВАЯ КОЛОНКА: Список товаров */}
+
         <div className="lg:col-span-7 space-y-6">
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-stone-100">
             <h2 className="text-lg font-semibold mb-4 text-stone-900">Товари у кошику</h2>
@@ -290,7 +285,6 @@ export default function CartPageClient() {
   );
 }
 
-// Вспомогательная иконка для пустой корзины
 function ShoppingBagX({ size }: { size: number }) {
   return (
     <svg 

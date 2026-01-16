@@ -9,7 +9,7 @@ import {
   Settings, 
   LogOut,
   ExternalLink,
-  FileText, // Контент
+  FileText,
   Menu
 } from "lucide-react";
 

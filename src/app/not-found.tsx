@@ -8,16 +8,13 @@ export default function NotFound() {
   return (
     <section className="relative min-h-[85vh] flex flex-col items-center justify-center px-4 overflow-hidden bg-[#FAFAF9]">
       
-      {/* Текстура шума (для стиля) */}
       <div className="absolute inset-0 opacity-[0.03] bg-[url('/images/noise.png')] mix-blend-overlay pointer-events-none" />
 
-      {/* Фоновые пятна */}
       <div className="pointer-events-none absolute top-1/4 left-1/4 h-64 w-64 rounded-full bg-amber-100/50 blur-[100px]" />
       <div className="pointer-events-none absolute bottom-1/4 right-1/4 h-64 w-64 rounded-full bg-stone-200/50 blur-[100px]" />
 
       <div className="relative z-10 flex flex-col items-center text-center">
-        
-        {/* Гигантские цифры 404 на заднем плане */}
+
         <motion.h1
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -27,7 +24,6 @@ export default function NotFound() {
           404
         </motion.h1>
 
-        {/* Контент поверх цифр */}
         <div className="-mt-12 sm:-mt-20 md:-mt-28 space-y-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -43,7 +39,6 @@ export default function NotFound() {
             </p>
           </motion.div>
 
-          {/* Кнопки */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}

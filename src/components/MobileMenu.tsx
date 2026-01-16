@@ -8,14 +8,12 @@ import { createPortal } from "react-dom";
 
 export type NavItem = { href: string; label: string; icon?: React.ReactNode };
 
-// Группы каталога
 const CATALOG_GROUPS = [
   { key: "pavuky", title: "Павуки" },
   { key: "vinky", title: "Вінки" },
   { key: "inshe", title: "Інше" },
 ] as const;
 
-// Подкатегории по группам
 const CATALOG_SUB: Record<string, { slug: string; title: string }[]> = {
   pavuky: [
     { slug: "pavuky-rizdvo", title: "Павуки до Різдва" },
@@ -62,7 +60,6 @@ export default function MobileMenu({
     };
   }, []);
 
-  // блокировка скролла
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -73,7 +70,6 @@ export default function MobileMenu({
     }
   }, [open]);
 
-  // при открытии меню всегда начинаем с корневого уровня
   useEffect(() => {
     if (open) {
       setMenuLevel("root");
@@ -81,7 +77,6 @@ export default function MobileMenu({
     }
   }, [open]);
 
-  // мягкий iOS-like слайд
   const slideInitial = { x: 56, opacity: 0 };
   const slideAnimate = { x: 0, opacity: 1 };
   const slideExit = { x: -56, opacity: 0 };

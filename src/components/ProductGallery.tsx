@@ -21,7 +21,6 @@ export default function ProductGallery({
   title,
   className = "",
 }: ProductGalleryProps) {
-  // Нормализация
   const safe = Array.isArray(images) && images.length > 0
     ? images.map((img) => {
         const src = typeof img === "string" ? img : img.src;
@@ -34,7 +33,6 @@ export default function ProductGallery({
   const [active, setActive] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Синхронизация скролла на мобильном
   const handleScroll = () => {
     if (scrollRef.current) {
       const scrollLeft = scrollRef.current.scrollLeft;
@@ -69,7 +67,6 @@ export default function ProductGallery({
               {item.kind === "video" ? (
                 <MobileVideoPlayer src={item.src} />
               ) : (
-                // p-6: Отступы, чтобы товар не прилипал
                 <div className="relative w-full h-full p-6"> 
                   <Image
                     src={item.src}
@@ -121,7 +118,6 @@ export default function ProductGallery({
               />
             </div>
           ) : (
-            // p-8: Хороший воздух вокруг товара на ПК
             <div className="relative w-full h-full p-8">
               <Image
                 src={safe[active].src}
@@ -161,7 +157,7 @@ export default function ProductGallery({
                     src={item.src}
                     alt={item.alt}
                     fill
-                    className="object-contain p-1" // Чуть отступа в миниатюре
+                    className="object-contain p-1" 
                   />
                 )}
               </button>
@@ -173,7 +169,6 @@ export default function ProductGallery({
   );
 }
 
-// --- Mobile Video Component ---
 function MobileVideoPlayer({ src }: { src: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);

@@ -51,8 +51,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-[#FAFAF9] p-6 sm:p-10">
       <div className="mx-auto max-w-6xl">
-        
-        {/* Хедер */}
+
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
           <div>
             <h1 className="text-3xl font-display font-bold text-stone-900">
@@ -73,7 +72,6 @@ export default function AdminDashboard() {
           </Link>
         </div>
 
-        {/* Основная сетка */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {menu.map((item) => (
             <Link

@@ -4,9 +4,8 @@ import { Montserrat, Roboto } from "next/font/google";
 import Header from "@/components/site/Header";
 import Footer from "@/components/site/Footer";
 import CartRoot from "@/components/cart/CartRoot";
-import { CartProvider } from "@/lib/cartContext"; // 👈 1. Добавили импорт
+import { CartProvider } from "@/lib/cartContext"; 
 
-// Шрифты через next/font
 const montserrat = Montserrat({
   subsets: ["latin", "cyrillic"],
   weight: ["600", "700", "800", "900"],
@@ -56,7 +55,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
       <body className="font-sans-custom bg-[#F7F4EE] text-stone-900 antialiased">
         
-        {/* 👇 2. Оборачиваем весь контент внутри body */}
         <CartProvider>
           <Header />
           <main className="pt-[72px] sm:pt-[80px]">

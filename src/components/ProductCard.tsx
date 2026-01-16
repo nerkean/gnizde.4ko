@@ -23,7 +23,6 @@ type Product = {
   availability?: "in_stock" | "on_order" | "out_of_stock";
 };
 
-// --- Хелперы ---
 function isVideoUrl(url?: string): boolean {
   if (!url) return false;
   return /\.(mp4|webm|ogg|mov)$/i.test(url);
@@ -84,7 +83,6 @@ export default function ProductCard({
 
   const isAvailable = availability !== "out_of_stock";
 
-  // Красивые бейджи
   let statusBadge = null;
   if (availability === "on_order") {
     statusBadge = (
@@ -102,8 +100,7 @@ export default function ProductCard({
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-[1.5rem] bg-white border border-stone-100 shadow-[0_2px_10px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(0,0,0,0.08)] hover:border-stone-200">
-      
-      {/* 1. ИЗОБРАЖЕНИЕ (Кликабельное) */}
+
       <Link href={href} className="relative aspect-[4/5] w-full overflow-hidden bg-stone-50">
         {media.kind === "video" ? (
           <>
@@ -129,28 +126,22 @@ export default function ProductCard({
           />
         )}
 
-        {/* Бейдж наличия */}
         {statusBadge && (
           <div className="absolute top-3 left-3 z-10">
             {statusBadge}
           </div>
         )}
 
-        {/* Затемнение снизу для лучшего контраста (если вдруг текст будет на фото, но у нас внизу) */}
-        {/* <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" /> */}
       </Link>
 
-      {/* 2. КОНТЕНТ (Внутри белой карточки) */}
       <div className="flex flex-1 flex-col p-5">
-        
-        {/* Заголовок */}
+
         <Link href={href} className="mb-2 block">
           <h3 className="text-[15px] sm:text-[16px] font-bold text-stone-900 leading-snug line-clamp-2 transition-colors group-hover:text-amber-700">
             {title}
           </h3>
         </Link>
 
-        {/* Цена и статус */}
         <div className="mt-auto flex items-end justify-between gap-2 pt-3">
           <div className="flex flex-col">
              <span className="text-[10px] uppercase text-stone-400 font-bold tracking-wider">Ціна</span>
@@ -160,7 +151,6 @@ export default function ProductCard({
           </div>
         </div>
 
-        {/* Кнопка действия (встроена в карточку) */}
         <div className="mt-4">
            {isAvailable ? (
              <AddToCart
